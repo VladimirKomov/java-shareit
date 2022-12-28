@@ -48,6 +48,9 @@ public class InMemoryUserStorage implements UserStorage {
         );
     }
 
-
+    @Override
+    public int getSize() {
+        return users.size();
+    }
 
 }

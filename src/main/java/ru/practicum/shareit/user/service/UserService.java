@@ -14,4 +14,6 @@ public interface UserService {
     User getUserById(long userId);
 
     Collection<User> getAllUsers();
+
+    int getSize();
 }

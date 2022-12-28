@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.model;
 
 import lombok.*;
+import ru.practicum.shareit.booking.abstracts.BaseModel;
 
 import java.util.Objects;
 
@@ -12,8 +13,7 @@ import java.util.Objects;
 //@AllArgsConstructor
 //@NoArgsConstructor
 @Data
-public class User {
-    private long id;
+public class User extends BaseModel {
     private String name;
     private String email;
 

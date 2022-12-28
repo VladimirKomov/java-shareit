@@ -13,8 +13,11 @@ import java.util.Collection;
 public class UserServiceImpl implements UserService{
 
     private final UserStorage userStorage;
+
+    private long generateId = 0L;
     @Override
     public User addUser(User user) {
+        user.setId(++generateId);
         return userStorage.addUser(user);
     }
 
@@ -36,5 +39,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public Collection<User> getAllUsers() {
         return userStorage.getAllUsers();
+    }
+
+    @Override
+    public int getSize() {
+        return userStorage.getSize();
     }
 }

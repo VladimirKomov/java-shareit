@@ -17,4 +17,6 @@ public interface UserStorage {
     Collection<User> getAllUsers();
 
     Optional<User> getUserByEmail(String email);
+
+    int getSize();
 }
