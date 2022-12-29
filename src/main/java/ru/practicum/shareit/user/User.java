@@ -1,20 +1,23 @@
-package ru.practicum.shareit.user.model;
+package ru.practicum.shareit.user;
 
 import lombok.*;
-import ru.practicum.shareit.booking.abstracts.BaseModel;
+import ru.practicum.shareit.booking.model.BaseModel;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
  * TODO Sprint add-controllers.
  */
-//@Getter
-//@Setter
-//@AllArgsConstructor
-//@NoArgsConstructor
+
 @Data
 public class User extends BaseModel {
+
     private String name;
+    @Email
+    @NotBlank
     private String email;
 
     @Override
