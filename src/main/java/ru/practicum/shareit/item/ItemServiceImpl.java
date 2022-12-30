@@ -2,10 +2,10 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
-import ru.practicum.shareit.model.Storage;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.model.Storage;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
@@ -18,13 +18,13 @@ public class ItemServiceImpl implements ItemService {
 
     private final Storage<Item> itemStorage;
     private final UserService userService;
+    private long generateId = 0L;
+
     @Autowired
     public ItemServiceImpl(Storage<Item> itemStorage, UserService userService) {
         this.itemStorage = itemStorage;
         this.userService = userService;
     }
-
-    private long generateId = 0L;
 
     public ItemDtoResponse create(long userId, ItemDto data) {
         data.setOwner(UserMapper.toUser(userService.get(userId)));
@@ -61,11 +61,11 @@ public class ItemServiceImpl implements ItemService {
         return itemStorage.getSize();
     }
 
-    protected  void validate(long userId, ItemDto data) {
-               if (userId !=
-                       itemStorage.get(data.getId()).orElseThrow(NotFoundException::new).getOwner().getId()) {
-                throw new NotFoundException();
-            }
+    protected void validate(long userId, ItemDto data) {
+        if (userId !=
+                itemStorage.get(data.getId()).orElseThrow(NotFoundException::new).getOwner().getId()) {
+            throw new NotFoundException();
+        }
 
     }
 

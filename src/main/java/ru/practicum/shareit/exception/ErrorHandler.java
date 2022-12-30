@@ -30,7 +30,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse ArgumentNotValidateException(final MethodArgumentNotValidException e) {
+    public ErrorResponse argumentNotValidateException(final MethodArgumentNotValidException e) {
         log.info(HttpStatus.BAD_REQUEST.toString() + " {}", e.getMessage());
         return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
     }
