@@ -11,7 +11,10 @@ import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Service
 public class ItemService {
@@ -27,53 +30,70 @@ public class ItemService {
     private long generateId = 0L;
 
     public ItemDto create(long userId, ItemDto data) {
-        userService.get(userId);
-        validate(data);
+        data.setOwner(UserMapper.toUser(userService.get(userId)));
         data.setId(++generateId);
         itemStorage.create(ItemMapper.toItem(data));
         return data;
-    }
-
-    protected  void validate(ItemDto data) {
-
     }
 
     public ItemDto get(long id) {
         return ItemMapper.toItemDto(itemStorage.get(id).orElseThrow(NotFoundException::new));
     }
 
-
-    public ItemDto update(long id, ItemDto data) {
-        //validate(data);
-        //data.setId(storage.get(id).orElseThrow(NotFoundException::new).getId());
+    public ItemDto update(long userId, long id, ItemDto data) {
+        validate(userId,
+                ItemMapper.toItemDto(itemStorage.get(id).orElseThrow(NotFoundException::new)));
         updateValues(id, data);
         itemStorage.update(ItemMapper.toItem(data));
         return data;
     }
 
     protected void updateValues(long id, ItemDto data) {
-
+        var donor = itemStorage.get(id).orElseThrow(NotFoundException::new);
+        data.setId(donor.getId());
+        if (data.getName() == null) {
+            data.setName(donor.getName());
+        }
+        if (data.getDescription() == null) {
+            data.setDescription(donor.getDescription());
+        }
+        if (data.getAvailable() == null) {
+            data.setAvailable(donor.getAvailable());
+        }
+        if (data.getRequest() == null) {
+            data.setOwner(donor.getOwner());
+        }
     };
 
     public void delete(long id) {
         itemStorage.delete(id);
     }
 
-    public void deleteAll() {
-        itemStorage.deleteAll();
-    }
-
-    public List<ItemDto> getAll() {
-        List<ItemDto> listItemDto = new ArrayList<>();
-        for (Item value: itemStorage.getAll()) {
-            listItemDto.add(ItemMapper.toItemDto(value));
-        }
-
-        return listItemDto;
-    }
-
     public int getSize() {
         return itemStorage.getSize();
     }
 
+    protected  void validate(long userId, ItemDto data) {
+               if (userId !=
+                       itemStorage.get(data.getId()).orElseThrow(NotFoundException::new).getOwner().getId()) {
+                throw new NotFoundException();
+            }
+
+    }
+
+    public Collection<ItemDto> getAllItemByUserId(long userId) {
+        return itemStorage.getAll().stream()
+                .filter(i -> i.getOwner().getId() == userId)
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
+    }
+
+    public Collection<ItemDto> getBySubstring(String substr) {
+        final String lowerCaseSubstr = substr.toLowerCase();
+        return lowerCaseSubstr.isBlank() ? List.of() : itemStorage.getAll().stream()
+                .filter(i -> i.getDescription().toLowerCase().contains(lowerCaseSubstr))
+                .filter(i -> i.getAvailable())
+                .map(ItemMapper::toItemDto)
+                .collect(Collectors.toList());
+    }
 }

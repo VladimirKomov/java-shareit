@@ -50,11 +50,9 @@ public class UserService {
     }
 
     public List<UserDto> getAll() {
-        List<UserDto> listUserDto = new ArrayList<>();
-        for (User value: storage.getAll()) {
-            listUserDto.add(UserMapper.toUserDto(value));
-        }
-        return  listUserDto;
+        return  storage.getAll().stream()
+                .map(UserMapper::toUserDto)
+                .collect(Collectors.toList());
     }
 
     public int getSize() {

@@ -4,8 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.user.UserDto;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 
 /**
  * TODO Sprint add-controllers.
@@ -30,7 +34,7 @@ public class ItemController {
                            @PathVariable long itemId,
                            @RequestBody ItemDto itemDto) {
         log.info("Update {}",  itemDto.toString());
-        return itemService.update(itemId, itemDto);
+        return itemService.update(userId, itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
@@ -40,16 +44,22 @@ public class ItemController {
     }
 
 //    @GetMapping
-//    public Collection<Item> getAllItem(@RequestHeader("X-Sharer-User-Id") long userId) {
+//    public Collection<ItemDto> getAllItems() {
 //        log.info("Items size {}", itemService.getSize());
-//        return itemService.getAllItemByUserId(userId);
+//        return itemService.getAll();
 //    }
 
-//    @GetMapping("/search")
-//    public Collection<Item> searchBySubstring(@RequestParam String text) {
-//        log.info("Search by text={}", text);
-//        return itemService.getBySubstring(text);
-//    }
+    @GetMapping
+    public Collection<ItemDto> getAllItem(@RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info("Items size {}", itemService.getSize());
+        return itemService.getAllItemByUserId(userId);
+    }
+
+    @GetMapping("/search")
+    public Collection<ItemDto> searchBySubstring(@RequestParam String text) {
+        log.info("Search by text={}", text);
+        return itemService.getBySubstring(text);
+    }
 
     @DeleteMapping("/{itemId}")
     public void deleteItemById(@PathVariable long itemId) {
