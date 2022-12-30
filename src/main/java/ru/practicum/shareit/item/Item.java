@@ -4,8 +4,6 @@ import lombok.Data;
 import ru.practicum.shareit.model.BaseModel;
 import ru.practicum.shareit.user.User;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * TODO Sprint add-controllers.
  */
@@ -13,7 +11,6 @@ import javax.validation.constraints.NotNull;
 public class Item extends BaseModel {
     private String name;
     private String description;
-    @NotNull
     private Boolean available;
     private User owner;
     private String request;

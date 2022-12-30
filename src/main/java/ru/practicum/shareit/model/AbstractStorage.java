@@ -3,7 +3,7 @@ package ru.practicum.shareit.model;
 
 import java.util.*;
 
-public abstract class AbstractStorage<T extends BaseModel> implements Storage<T>{
+public abstract class AbstractStorage<T extends BaseModel> implements Storage<T> {
 
     private final Map<Long, T> storage = new HashMap<>();
 
@@ -29,11 +29,6 @@ public abstract class AbstractStorage<T extends BaseModel> implements Storage<T>
     }
 
     @Override
-    public void deleteAll() {
-        storage.clear();
-    }
-
-    @Override
     public List<T> getAll() {
         return new ArrayList<>(storage.values());
     }
@@ -43,11 +38,4 @@ public abstract class AbstractStorage<T extends BaseModel> implements Storage<T>
         return storage.size();
     }
 
-    @Override
-    public Optional<T> get(T data) {
-        return Optional.of(storage.values().stream()
-                .filter(d -> d.canEqual(data))
-                .findFirst().get()
-        );
-    }
 }

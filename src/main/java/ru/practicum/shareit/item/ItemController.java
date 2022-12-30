@@ -23,15 +23,15 @@ public class ItemController {
     @PostMapping
     public ItemDtoResponse addItem(@RequestHeader("X-Sharer-User-Id") long userId,
                                    @Valid @RequestBody ItemDto itemDto) {
-        log.info("Create {} by userId={}",  itemDto.toString(), userId);
+        log.info("Create {} by userId={}", itemDto.toString(), userId);
         return itemService.create(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
     public ItemDtoResponse updateItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                           @PathVariable long itemId,
-                           @RequestBody ItemDto itemDto) {
-        log.info("Update {}",  itemDto.toString());
+                                      @PathVariable long itemId,
+                                      @RequestBody ItemDto itemDto) {
+        log.info("Update {}", itemDto.toString());
         return itemService.update(userId, itemId, itemDto);
     }
 
