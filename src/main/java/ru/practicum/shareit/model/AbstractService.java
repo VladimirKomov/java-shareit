@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.model;
+package ru.practicum.shareit.model;
 
 import ru.practicum.shareit.exception.NotFoundException;
 
@@ -27,8 +27,6 @@ public abstract class AbstractService<T extends BaseModel> implements Service<T>
 
     @Override
     public T update(long id, T data) {
-        //validate(data);
-        //data.setId(storage.get(id).orElseThrow(NotFoundException::new).getId());
         updateValues(id, data);
         storage.update(data);
         return data;

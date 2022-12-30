@@ -1,11 +1,10 @@
 package ru.practicum.shareit.user;
 
 import lombok.*;
-import ru.practicum.shareit.booking.model.BaseModel;
+import ru.practicum.shareit.model.BaseModel;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**

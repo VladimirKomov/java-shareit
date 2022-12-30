@@ -2,18 +2,15 @@ package ru.practicum.shareit.item;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.model.Storage;
+import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.model.Storage;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.UserDto;
 import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.UserService;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,23 +26,23 @@ public class ItemService {
 
     private long generateId = 0L;
 
-    public ItemDto create(long userId, ItemDto data) {
+    public ItemDtoResponse create(long userId, ItemDto data) {
         data.setOwner(UserMapper.toUser(userService.get(userId)));
         data.setId(++generateId);
-        itemStorage.create(ItemMapper.toItem(data));
-        return data;
+       //itemStorage.create(ItemMapper.toItem(data));
+        return ItemMapper.toItemDtoResponse(itemStorage.create(ItemMapper.toItem(data)));
     }
 
-    public ItemDto get(long id) {
-        return ItemMapper.toItemDto(itemStorage.get(id).orElseThrow(NotFoundException::new));
+    public ItemDtoResponse get(long id) {
+        return ItemMapper.toItemDtoResponse(itemStorage.get(id).orElseThrow(NotFoundException::new));
     }
 
-    public ItemDto update(long userId, long id, ItemDto data) {
+    public ItemDtoResponse update(long userId, long id, ItemDto data) {
         validate(userId,
                 ItemMapper.toItemDto(itemStorage.get(id).orElseThrow(NotFoundException::new)));
         updateValues(id, data);
         itemStorage.update(ItemMapper.toItem(data));
-        return data;
+        return ItemMapper.toItemDtoResponse(data);
     }
 
     protected void updateValues(long id, ItemDto data) {
@@ -81,19 +78,19 @@ public class ItemService {
 
     }
 
-    public Collection<ItemDto> getAllItemByUserId(long userId) {
+    public Collection<ItemDtoResponse> getAllItemByUserId(long userId) {
         return itemStorage.getAll().stream()
                 .filter(i -> i.getOwner().getId() == userId)
-                .map(ItemMapper::toItemDto)
+                .map(ItemMapper::toItemDtoResponse)
                 .collect(Collectors.toList());
     }
 
-    public Collection<ItemDto> getBySubstring(String substr) {
+    public Collection<ItemDtoResponse> getBySubstring(String substr) {
         final String lowerCaseSubstr = substr.toLowerCase();
         return lowerCaseSubstr.isBlank() ? List.of() : itemStorage.getAll().stream()
                 .filter(i -> i.getDescription().toLowerCase().contains(lowerCaseSubstr))
                 .filter(i -> i.getAvailable())
-                .map(ItemMapper::toItemDto)
+                .map(ItemMapper::toItemDtoResponse)
                 .collect(Collectors.toList());
     }
 }

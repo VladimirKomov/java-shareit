@@ -1,14 +1,11 @@
 package ru.practicum.shareit.user;
 
-import org.apache.el.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.booking.model.Storage;
+import ru.practicum.shareit.model.Storage;
 import ru.practicum.shareit.exception.NotFoundException;
 
 import javax.validation.ValidationException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
