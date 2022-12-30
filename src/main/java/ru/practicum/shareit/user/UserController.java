@@ -19,25 +19,25 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public User addUser(@Valid @RequestBody UserDto userDto) {
+    public UserDto addUser(@Valid @RequestBody UserDto userDto) {
         log.info("Create {}",  userDto.toString());
-        return userService.create(UserMapper.toUser(userDto));
+        return userService.create(userDto);
     }
 
     @PatchMapping("/{userId}")
-    public User updateUser(@PathVariable long userId, @RequestBody UserDto userDto) {
+    public UserDto updateUser(@PathVariable long userId, @RequestBody UserDto userDto) {
         log.info("Update {}",  userDto.toString());
-        return userService.update(userId, UserMapper.toUser(userDto));
+        return userService.update(userId, userDto);
     }
 
     @GetMapping("/{userId}")
-    public User getUserById(@PathVariable long userId) {
+    public UserDto getUserById(@PathVariable long userId) {
         log.info("GET Item id={}", userId);
         return userService.get(userId);
     }
 
     @GetMapping
-    public Collection<User> getAllUsers() {
+    public Collection<UserDto> getAllUsers() {
         log.info("Items size {}", userService.getSize());
         return userService.getAll();
     }

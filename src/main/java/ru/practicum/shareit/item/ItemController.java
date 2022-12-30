@@ -3,6 +3,9 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.ItemDto;
+
+import javax.validation.Valid;
 
 /**
  * TODO Sprint add-controllers.
@@ -16,22 +19,22 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public Item addItem(@RequestHeader("X-Sharer-User-Id") long userId,
-                        @RequestBody Item item) {
-        log.info("Create {}",  item.toString());
-        return itemService.create(item);
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId,
+                           @Valid @RequestBody ItemDto itemDto) {
+        log.info("Create {} by userId={}",  itemDto.toString(), userId);
+        return itemService.create(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
-    public Item updateItem(@RequestHeader("X-Sharer-User-Id") long userId,
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId,
                            @PathVariable long itemId,
-                           @RequestBody Item item) {
-        log.info("Update {}",  item.toString());
-        return itemService.update(itemId, item);
+                           @RequestBody ItemDto itemDto) {
+        log.info("Update {}",  itemDto.toString());
+        return itemService.update(itemId, itemDto);
     }
 
     @GetMapping("/{itemId}")
-    public Item getItemById(@PathVariable long itemId) {
+    public ItemDto getItemById(@PathVariable long itemId) {
         log.info("GET Item id={}", itemId);
         return itemService.get(itemId);
     }

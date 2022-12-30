@@ -4,6 +4,9 @@ import lombok.Data;
 import ru.practicum.shareit.booking.model.BaseModel;
 import ru.practicum.shareit.user.User;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * TODO Sprint add-controllers.
  */
@@ -11,7 +14,17 @@ import ru.practicum.shareit.user.User;
 public class Item extends BaseModel {
     private String name;
     private String description;
+    @NotNull
     private Boolean available;
     private User owner;
     private String request;
+
+    public Item(long id, String name, String description, Boolean available, User owner, String request) {
+        setId(id);
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.owner = owner;
+        this.request = request;
+    }
 }
