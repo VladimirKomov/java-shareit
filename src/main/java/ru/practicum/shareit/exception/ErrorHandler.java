@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ValidationException;
 
@@ -34,6 +35,13 @@ public class ErrorHandler {
         String message = e.getBindingResult().getFieldError().getField() + ": "
                 + e.getBindingResult().getFieldError().getDefaultMessage() + ".";
         return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), message);
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse notTypeValidateException(final MethodArgumentTypeMismatchException e) {
+        log.info(HttpStatus.BAD_REQUEST + " {}", e.getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
     }
 
     @ExceptionHandler
