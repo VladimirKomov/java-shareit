@@ -1,27 +1,20 @@
 package ru.practicum.shareit.item;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 
-public class ItemMapper {
+@Mapper(componentModel = "spring", uses = ItemMapper.class)
+public interface ItemMapper {
 
-    public static ItemDto toItemDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
-                item.getOwner(), item.getRequest());
-    }
+    ItemMapper MAP = Mappers.getMapper(ItemMapper.class);
 
-    public static Item toItem(ItemDto itemDto) {
-        return new Item(itemDto.getId(), itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(),
-                itemDto.getOwner(), itemDto.getRequest());
-    }
+    ItemDto toItemDto(Item item);
 
-    public static ItemDtoResponse toItemDtoResponse(Item item) {
-        return new ItemDtoResponse(item.getId(), item.getName(), item.getDescription(), item.getAvailable());
-    }
+    Item toItem(ItemDto itemDto);
 
-    public static ItemDtoResponse toItemDtoResponse(ItemDto itemDto) {
-        return new ItemDtoResponse(itemDto.getId(), itemDto.getName(),
-                itemDto.getDescription(), itemDto.getAvailable());
-    }
+    ItemDtoResponse toItemDtoResponse(Item item);
 
+    ItemDtoResponse toItemDtoResponse(ItemDto itemDto);
 }

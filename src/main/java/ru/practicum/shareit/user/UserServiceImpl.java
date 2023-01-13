@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final Storage<User> storage;
-    private long generateId = 0L;
+       private long generateId = 0L;
 
     @Autowired
     public UserServiceImpl(Storage<User> storage) {
@@ -24,17 +24,17 @@ public class UserServiceImpl implements UserService {
     public UserDto create(UserDto data) {
         validate(data);
         data.setId(++generateId);
-        storage.create(UserMapper.toUser(data));
+        storage.create(UserMapper.MAP.toUser(data));
         return data;
     }
 
     public UserDto get(long id) {
-        return UserMapper.toUserDto(storage.get(id).orElseThrow(NotFoundException::new));
+        return UserMapper.MAP.toUserDto(storage.get(id).orElseThrow(NotFoundException::new));
     }
 
     public UserDto update(long id, UserDto data) {
         data = updateValues(id, data);
-        storage.update(UserMapper.toUser(data));
+        storage.update(UserMapper.MAP.toUser(data));
         return data;
     }
 
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
 
     public List<UserDto> getAll() {
         return storage.getAll().stream()
-                .map(UserMapper::toUserDto)
+                .map(UserMapper.MAP::toUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -55,14 +55,14 @@ public class UserServiceImpl implements UserService {
     protected UserDto updateValues(long id, UserDto data) {
         if (data.getEmail() != null) validate(data);
 
-        var recipient = UserMapper.toUserDto(storage.get(id).orElseThrow(NotFoundException::new));
+        var recipient = UserMapper.MAP.toUserDto(storage.get(id).orElseThrow(NotFoundException::new));
         if (data.getName() != null) recipient.setName(data.getName());
         if (data.getEmail() != null) recipient.setEmail(data.getEmail());
         return recipient;
     }
 
     protected void validate(UserDto data) {
-        if (storage.getAll().contains(UserMapper.toUser(data))) {
+        if (storage.getAll().contains(UserMapper.MAP.toUser(data))) {
             throw new ValidationException("User already exists");
         }
     }

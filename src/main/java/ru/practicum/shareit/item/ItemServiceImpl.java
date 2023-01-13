@@ -21,31 +21,31 @@ public class ItemServiceImpl implements ItemService {
     private long generateId = 0L;
 
     @Autowired
-    public ItemServiceImpl(Storage<Item> itemStorage, UserService userService) {
+    public ItemServiceImpl(Storage<Item> itemStorage, UserService userService, UserMapper userMapper) {
         this.itemStorage = itemStorage;
         this.userService = userService;
     }
 
     public ItemDtoResponse create(long userId, ItemDto data) {
-        data.setOwner(UserMapper.toUser(userService.get(userId)));
+        data.setOwner(UserMapper.MAP.toUser(userService.get(userId)));
         data.setId(++generateId);
-        return ItemMapper.toItemDtoResponse(itemStorage.create(ItemMapper.toItem(data)));
+        return ItemMapper.MAP.toItemDtoResponse(itemStorage.create(ItemMapper.MAP.toItem(data)));
     }
 
     public ItemDtoResponse get(long id) {
-        return ItemMapper.toItemDtoResponse(itemStorage.get(id).orElseThrow(NotFoundException::new));
+        return ItemMapper.MAP.toItemDtoResponse(itemStorage.get(id).orElseThrow(NotFoundException::new));
     }
 
     public ItemDtoResponse update(long userId, long id, ItemDto data) {
         validate(userId,
-                ItemMapper.toItemDto(itemStorage.get(id).orElseThrow(NotFoundException::new)));
+                ItemMapper.MAP.toItemDto(itemStorage.get(id).orElseThrow(NotFoundException::new)));
         data = updateValues(id, data);
-        itemStorage.update(ItemMapper.toItem(data));
-        return ItemMapper.toItemDtoResponse(data);
+        itemStorage.update(ItemMapper.MAP.toItem(data));
+        return ItemMapper.MAP.toItemDtoResponse(data);
     }
 
     protected ItemDto updateValues(long id, ItemDto data) {
-        var recipient = ItemMapper.toItemDto(itemStorage.get(id).orElseThrow(NotFoundException::new));
+        var recipient = ItemMapper.MAP.toItemDto(itemStorage.get(id).orElseThrow(NotFoundException::new));
         if (data.getName() != null) recipient.setName(data.getName());
         if (data.getDescription() != null) recipient.setDescription(data.getDescription());
         if (data.getAvailable() != null) recipient.setAvailable(data.getAvailable());
@@ -72,7 +72,7 @@ public class ItemServiceImpl implements ItemService {
     public Collection<ItemDtoResponse> getAllItemByUserId(long userId) {
         return itemStorage.getAll().stream()
                 .filter(i -> i.getOwner().getId() == userId)
-                .map(ItemMapper::toItemDtoResponse)
+                .map(ItemMapper.MAP::toItemDtoResponse)
                 .collect(Collectors.toList());
     }
 
@@ -81,7 +81,7 @@ public class ItemServiceImpl implements ItemService {
         return lowerCaseSubstr.isBlank() ? List.of() : itemStorage.getAll().stream()
                 .filter(i -> i.getDescription().toLowerCase().contains(lowerCaseSubstr))
                 .filter(Item::getAvailable)
-                .map(ItemMapper::toItemDtoResponse)
+                .map(ItemMapper.MAP::toItemDtoResponse)
                 .collect(Collectors.toList());
     }
 }
