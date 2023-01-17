@@ -8,7 +8,7 @@ import ru.practicum.shareit.user.dto.UserDto;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface UserMapper {
 
-    UserMapper MAP = Mappers.getMapper(UserMapper.class);
+    UserMapper MAP_USER = Mappers.getMapper(UserMapper.class);
 
     UserDto toUserDto(User user);
 

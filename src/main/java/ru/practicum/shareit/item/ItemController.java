@@ -12,9 +12,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @Validated
 @RestController

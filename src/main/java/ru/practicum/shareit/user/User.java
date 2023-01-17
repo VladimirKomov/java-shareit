@@ -9,14 +9,10 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
-/**
- * TODO Sprint add-controllers.
- */
-
-
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Entity @Table(name = "users")
+@Entity
+@Table(name = "users")
 public class User {
 
     @Id

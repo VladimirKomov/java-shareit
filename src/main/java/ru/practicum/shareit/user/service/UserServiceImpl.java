@@ -3,13 +3,14 @@ package ru.practicum.shareit.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.UserMapper;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import javax.validation.ValidationException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -23,16 +24,16 @@ public class UserServiceImpl implements UserService {
 
     public UserDto create(UserDto data) {
         validate(data);
-        return UserMapper.MAP.toUserDto(repository.save(UserMapper.MAP.toUser(data)));
+        return MAP_USER.toUserDto(repository.save(MAP_USER.toUser(data)));
     }
 
     public UserDto get(long id) {
-        return UserMapper.MAP.toUserDto(repository.findById(id).orElseThrow(NotFoundException::new));
+        return MAP_USER.toUserDto(repository.findById(id).orElseThrow(NotFoundException::new));
     }
 
     public UserDto update(long id, UserDto data) {
         data = updateValues(id, data);
-        repository.save(UserMapper.MAP.toUser(data));
+        repository.save(MAP_USER.toUser(data));
         return data;
     }
 
@@ -42,7 +43,7 @@ public class UserServiceImpl implements UserService {
 
     public List<UserDto> getAll() {
         return repository.findAll().stream()
-                .map(UserMapper.MAP::toUserDto)
+                .map(MAP_USER::toUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -53,14 +54,14 @@ public class UserServiceImpl implements UserService {
 
     protected UserDto updateValues(long id, UserDto data) {
         if (data.getEmail() != null) validate(data);
-        var target = UserMapper.MAP.toUserDto(repository.findById(id).orElseThrow(NotFoundException::new));
-        UserMapper.MAP.update(data, target);
+        var target = MAP_USER.toUserDto(repository.findById(id).orElseThrow(NotFoundException::new));
+        MAP_USER.update(data, target);
 
         return target;
     }
 
     protected void validate(UserDto data) {
-        if (repository.findAll().contains(UserMapper.MAP.toUser(data))) {
+        if (repository.findAll().contains(MAP_USER.toUser(data))) {
             throw new ValidationException("User already exists");
         }
     }

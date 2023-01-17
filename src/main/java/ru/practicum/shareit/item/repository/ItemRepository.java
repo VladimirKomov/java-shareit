@@ -8,12 +8,12 @@ import ru.practicum.shareit.item.Item;
 import java.util.Collection;
 import java.util.List;
 
-@Repository
+
 public interface ItemRepository extends JpaRepository<Item, Long> {
-    long countById(Long id);
-
-    Collection<Item> findItemsByOwnerId(Long idSearch);
-
+//    long countById(Long id);
+//
+//    Collection<Item> findItemsByOwnerId(Long idSearch);
+//
     @Query(
             "SELECT i FROM Item i " +
                     "WHERE UPPER(i.name) LIKE UPPER(CONCAT('%', ?1, '%')) " +

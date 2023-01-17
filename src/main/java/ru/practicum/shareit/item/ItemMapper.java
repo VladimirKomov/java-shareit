@@ -12,7 +12,7 @@ import ru.practicum.shareit.item.dto.ItemDtoResponse;
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ItemMapper {
 
-    ItemMapper MAP = Mappers.getMapper(ItemMapper.class);
+    ItemMapper MAP_ITEM = Mappers.getMapper(ItemMapper.class);
 
     ItemDto toItemDto(Item item);
 
