@@ -18,6 +18,8 @@ public interface ItemMapper {
 
     Item toItem(ItemDto itemDto);
 
+    Item toItem(ItemDtoResponse itemDtoResponse);
+
     ItemDtoResponse toItemDtoResponse(Item item);
 
     ItemDtoResponse toItemDtoResponse(ItemDto itemDto);

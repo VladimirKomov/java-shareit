@@ -23,8 +23,9 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDto create(UserDto data) {
-        validate(data);
-        return MAP_USER.toUserDto(repository.save(MAP_USER.toUser(data)));
+        //validate(data);
+        UserDto userDto = MAP_USER.toUserDto(repository.save(MAP_USER.toUser(data)));
+        return userDto;
     }
 
     public UserDto get(long id) {
@@ -53,17 +54,17 @@ public class UserServiceImpl implements UserService {
     }
 
     protected UserDto updateValues(long id, UserDto data) {
-        if (data.getEmail() != null) validate(data);
+        //if (data.getEmail() != null) validate(data);
         var target = MAP_USER.toUserDto(repository.findById(id).orElseThrow(NotFoundException::new));
         MAP_USER.update(data, target);
 
         return target;
     }
 
-    protected void validate(UserDto data) {
-        if (repository.findAll().contains(MAP_USER.toUser(data))) {
-            throw new ValidationException("User already exists");
-        }
-    }
+//    protected void validate(UserDto data) {
+//        if (repository.findAll().contains(MAP_USER.toUser(data))) {
+//            throw new ValidationException("User already exists");
+//        }
+//    }
 
 }

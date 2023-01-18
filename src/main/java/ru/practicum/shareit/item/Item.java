@@ -1,8 +1,6 @@
 package ru.practicum.shareit.item;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 
@@ -27,5 +25,7 @@ public class Item {
     @JoinColumn(name = "request_id")
     private ItemRequest request;
 
-
+    public Item(long id) {
+        this.id = id;
+    }
 }

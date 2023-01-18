@@ -1,6 +1,7 @@
 package ru.practicum.shareit.booking.service;
 
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 
 import java.time.LocalDateTime;
@@ -8,11 +9,11 @@ import java.util.Collection;
 
 public interface BookingService {
 
-    BookingDtoResponse addBooking(long userId, BookingDto bookingDto);
+    BookingDtoResponse create(long userId, BookingDtoRequest bookingDto);
 
-    BookingDtoResponse approveBooking(long ownerId, long bookingId, boolean approved);
+    BookingDtoResponse approve(long ownerId, long bookingId, boolean approved);
 
-    BookingDtoResponse getBookingById(long bookingId);
+    BookingDtoResponse getById(long bookingId);
 
     BookingDtoResponse requestBookingByIdByOwnerBookingOrItem(long bookingId, long userId);
 

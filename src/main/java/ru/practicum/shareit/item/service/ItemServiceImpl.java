@@ -85,7 +85,7 @@ public class ItemServiceImpl implements ItemService {
 //                .filter(Item::getAvailable)
 //                .map(ItemMapper.MAP::toItemDtoResponse)
 //                .collect(Collectors.toList());
-        return substr.isBlank() ? List.of() : itemRepository.searchByNameAndDescription(substr).stream()
+        return substr.isBlank() ? List.of() : itemRepository.searchAvailableByNameAndDescription(substr).stream()
                 .map(MAP_ITEM::toItemDtoResponse)
                 .collect(Collectors.toList());
     }

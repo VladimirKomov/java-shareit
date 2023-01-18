@@ -1,15 +1,18 @@
 package ru.practicum.shareit.booking;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "bookings")
@@ -29,4 +32,5 @@ public class Booking {
     private User booker;
     @Enumerated(EnumType.STRING)
     private StatusBooking status;
+
 }

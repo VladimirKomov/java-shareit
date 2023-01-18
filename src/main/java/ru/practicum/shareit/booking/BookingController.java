@@ -5,13 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.Collection;
 
 
@@ -25,9 +22,9 @@ public class BookingController {
     private final BookingService bookingService;
     @PostMapping
     public BookingDtoResponse addBooking(@RequestHeader("X-Sharer-User-Id") long userId,
-                                         @RequestBody BookingDto bookingDto) {
+                                         @RequestBody BookingDtoRequest bookingDto) {
         log.info("Create {} by userId={}", bookingDto.toString(), userId);
-        return bookingService.addBooking(userId, bookingDto);
+        return bookingService.create(userId, bookingDto);
     }
 
     // Может быть выполнено владельцем вещи
@@ -35,7 +32,7 @@ public class BookingController {
     public BookingDtoResponse approveBooking(@RequestHeader("X-Sharer-User-Id") long ownerId,
                                         @PathVariable long bookingId,
                                         @RequestParam boolean approved) {
-        return bookingService.approveBooking(ownerId, bookingId, approved);
+        return bookingService.approve(ownerId, bookingId, approved);
     }
 
     //     Может быть выполнено либо автором бронирования, либо владельцем вещи
