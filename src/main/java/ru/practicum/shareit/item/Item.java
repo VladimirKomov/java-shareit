@@ -25,7 +25,4 @@ public class Item {
     @JoinColumn(name = "request_id")
     private ItemRequest request;
 
-    public Item(long id) {
-        this.id = id;
-    }
 }

@@ -9,7 +9,12 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.item.Item;
+import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
@@ -33,6 +38,11 @@ public class BookingServiceImpl implements BookingService {
         Booking booking = MAP_BOOKING.toBooking(bookingDto);
         booking.setBooker(MAP_USER.toUser(userService.get(userId)));
         booking.setItem(MAP_ITEM.toItem(itemService.get(bookingDto.getItemId())));
+//        if (!booking.getItem().getAvailable()) {
+//            throw new BadRequestException("Недоступно для бронирования");
+//        }
+        validation(booking);
+
         booking.setStatus(StatusBooking.WAITING);
         bookingRepository.save(booking);
         return MAP_BOOKING.toBookingDtoResponse(booking);
@@ -77,5 +87,15 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDtoResponse getNextItemBooking(long itemId, LocalDateTime now) {
         return null;
+    }
+
+    private void validation(Booking booking) {
+        if (!booking.getItem().getAvailable()) {
+            throw new BadRequestException("Not available for booking");
+        }
+        if (booking.getStart().isAfter(booking.getEnd())
+                || booking.getStart().isBefore(LocalDateTime.now())) {
+            throw new BadRequestException("The time is incorrect");
+        }
     }
 }

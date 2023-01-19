@@ -13,20 +13,25 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
-@Mapper(componentModel = "spring", uses = BookingMapper.class,
+@Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface BookingMapper {
 
     BookingMapper MAP_BOOKING = Mappers.getMapper(BookingMapper.class);
 
-    @Mapping(target = "start", source = "start", qualifiedByName = "toTimestamp")
-    @Mapping(target = "end", source = "end", qualifiedByName = "toTimestamp")
+//    @Mapping(target = "start", source = "start", qualifiedByName = "toTimestamp")
+//    @Mapping(target = "end", source = "end", qualifiedByName = "toTimestamp")
     Booking toBooking(BookingDtoRequest bookingDtoRequest);
 
-    @Named("toTimestamp")
-    default Timestamp toTimestamp(LocalDateTime localDateTime) {
-        return Timestamp.valueOf(localDateTime);
-    }
+//    @Named("toTimestamp")
+//    default Timestamp toTimestamp(LocalDateTime localDateTime) {
+//        return Timestamp.valueOf(localDateTime);
+//    }
+
+//    @Named("toTimestamp")
+//    default LocalDateTime toTimestamp(LocalDateTime localDateTime) {
+//        return localDateTime;
+//    }
 
     BookingDtoResponse toBookingDtoResponse(Booking booking);
 
