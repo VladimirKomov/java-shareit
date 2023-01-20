@@ -15,5 +15,5 @@ public interface UserMapper {
     User toUser(UserDto userDto);
 
     @Mapping(target = "id", ignore = true)
-    void update(UserDto donor, @MappingTarget UserDto target);
+    void update(User donor, @MappingTarget User target);
 }

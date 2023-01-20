@@ -1,13 +1,11 @@
 package ru.practicum.shareit.booking;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
+import ru.practicum.shareit.item.dto.ItemDto;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -35,6 +33,8 @@ public interface BookingMapper {
 
     BookingDtoResponse toBookingDtoResponse(Booking booking);
 
+   //    @Mapping(target = "id", ignore = true)
+//    void update(ItemDto donor, @MappingTarget ItemDto target);
 
 
 }

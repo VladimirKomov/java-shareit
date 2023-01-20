@@ -7,15 +7,15 @@ import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import java.util.Collection;
 
 public interface ItemService {
-    ItemDtoResponse create(long userId, ItemDto itemDto);
+    Item create(long userId, ItemDto itemDto);
 
-    ItemDtoResponse update(long userId, long itemId, ItemDto itemDto);
+    Item update(long userId, long itemId, ItemDto itemDto);
 
-    ItemDtoResponse get(long id);
+    Item get(long id);
 
-    Collection<ItemDtoResponse> getAllItemByUserId(long id);
+    Collection<Item> getAllItemByUserId(long id);
 
-    Collection<ItemDtoResponse> getBySubstring(String substring);
+    Collection<Item> getBySubstring(String substring);
 
     void delete(long id);
 

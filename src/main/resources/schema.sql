@@ -59,9 +59,9 @@ CREATE TABLE IF NOT EXISTS bookings
 
 
 
--- delete from USERS;
--- alter table USERS alter column ID restart with 1;
--- delete from ITEMS;
--- alter table ITEMS alter column ID restart with 1;
--- delete from bookings;
--- alter table bookings alter column ID restart with 1;
+delete from USERS;
+alter table USERS alter column ID restart with 1;
+delete from ITEMS;
+alter table ITEMS alter column ID restart with 1;
+delete from bookings;
+alter table bookings alter column ID restart with 1;

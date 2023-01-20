@@ -3,12 +3,13 @@ package ru.practicum.shareit.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.user.repository.UserRepository;
+import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.repository.UserRepository;
 
-import javax.validation.ValidationException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
@@ -22,49 +23,35 @@ public class UserServiceImpl implements UserService {
         this.repository = storage;
     }
 
-    public UserDto create(UserDto data) {
-        //validate(data);
-        UserDto userDto = MAP_USER.toUserDto(repository.save(MAP_USER.toUser(data)));
-        return userDto;
+    public User create(UserDto data) {
+        return repository.save(MAP_USER.toUser(data));
     }
 
-    public UserDto get(long id) {
-        return MAP_USER.toUserDto(repository.findById(id).orElseThrow(NotFoundException::new));
+    public User get(long id) {
+        return repository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-    public UserDto update(long id, UserDto data) {
-        data = updateValues(id, data);
-        repository.save(MAP_USER.toUser(data));
-        return data;
+    public User update(long id, UserDto data) {
+        return repository.save(updateValues(id, data));
     }
 
     public void delete(long id) {
         repository.deleteById(id);
     }
 
-    public List<UserDto> getAll() {
-        return repository.findAll().stream()
-                .map(MAP_USER::toUserDto)
-                .collect(Collectors.toList());
+    public List<User> getAll() {
+        return new ArrayList<>(repository.findAll());
     }
 
     public int getSize() {
-        //return storage.getSize();
         return 0;
     }
 
-    protected UserDto updateValues(long id, UserDto data) {
-        //if (data.getEmail() != null) validate(data);
-        var target = MAP_USER.toUserDto(repository.findById(id).orElseThrow(NotFoundException::new));
-        MAP_USER.update(data, target);
+    protected User updateValues(long id, UserDto data) {
+        var target = repository.findById(id).orElseThrow(NotFoundException::new);
+        MAP_USER.update(MAP_USER.toUser(data), target);
 
         return target;
     }
-
-//    protected void validate(UserDto data) {
-//        if (repository.findAll().contains(MAP_USER.toUser(data))) {
-//            throw new ValidationException("User already exists");
-//        }
-//    }
 
 }

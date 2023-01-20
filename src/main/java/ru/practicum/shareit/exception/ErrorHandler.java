@@ -52,6 +52,13 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse badRequestState(final StateException e) {
+        log.info(HttpStatus.BAD_REQUEST + " {}", e.getMessage());
+        return new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.toString());
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse throwable(final Throwable e) {
         log.info(HttpStatus.INTERNAL_SERVER_ERROR + " {}", e.getMessage());

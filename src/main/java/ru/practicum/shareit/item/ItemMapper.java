@@ -25,5 +25,5 @@ public interface ItemMapper {
     ItemDtoResponse toItemDtoResponse(ItemDto itemDto);
 
     @Mapping(target = "id", ignore = true)
-    void update(ItemDto donor, @MappingTarget ItemDto target);
+    void update(Item donor, @MappingTarget Item target);
 }

@@ -1,28 +1,22 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
-import ru.practicum.shareit.booking.BookingMapper;
 import ru.practicum.shareit.booking.StatusBooking;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
-import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BadRequestException;
 import ru.practicum.shareit.exception.NotFoundException;
-import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.exception.StateException;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 
 import static ru.practicum.shareit.booking.BookingMapper.MAP_BOOKING;
-import static ru.practicum.shareit.item.ItemMapper.MAP_ITEM;
-import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
 
 @Service
@@ -34,44 +28,95 @@ public class BookingServiceImpl implements BookingService {
     private final ItemService itemService;
 
     @Override
-    public BookingDtoResponse create(long userId, BookingDtoRequest bookingDto) {
+    public Booking create(long userId, BookingDtoRequest bookingDto) {
         Booking booking = MAP_BOOKING.toBooking(bookingDto);
-        booking.setBooker(MAP_USER.toUser(userService.get(userId)));
-        booking.setItem(MAP_ITEM.toItem(itemService.get(bookingDto.getItemId())));
+        booking.setBooker(userService.get(userId));
+        booking.setItem(itemService.get(bookingDto.getItemId()));
 //        if (!booking.getItem().getAvailable()) {
 //            throw new BadRequestException("Недоступно для бронирования");
 //        }
         validation(booking);
 
         booking.setStatus(StatusBooking.WAITING);
-        bookingRepository.save(booking);
-        return MAP_BOOKING.toBookingDtoResponse(booking);
+        //bookingRepository.save(booking);
+        return bookingRepository.save(booking);
 
     }
 
     @Override
-    public BookingDtoResponse approve(long ownerId, long bookingId, boolean approved) {
-        return null;
+    public Booking approve(long ownerId, long bookingId, boolean approved) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotFoundException::new);
+        if (booking.getItem().getOwner().getId() != ownerId) throw new NotFoundException();
+        if (booking.getStatus() == StatusBooking.APPROVED) throw new BadRequestException("Status incorrect");
+        if (approved) {
+            booking.setStatus(StatusBooking.APPROVED);
+        } else {
+            booking.setStatus(StatusBooking.REJECTED);
+        }
+        return bookingRepository.save(booking);
     }
 
     @Override
-    public BookingDtoResponse getById(long bookingId) {
-        return null;
+    public Booking getById(long bookingId) {
+        return bookingRepository.findById(bookingId).orElseThrow(NotFoundException::new);
     }
 
     @Override
-    public BookingDtoResponse requestBookingByIdByOwnerBookingOrItem(long bookingId, long userId) {
-        return null;
+    public Booking getBookingById(long userId, long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotFoundException::new);
+        if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
+            throw new NotFoundException();
+        }
+        return booking;
+//
+//        return bookingRepository.findByIdAndAndBookerIdOrItemOwnerId(bookingId, userId, userId)
+//                .orElseThrow(NotFoundException::new);
+
     }
 
     @Override
-    public Collection<BookingDtoResponse> getUserBookings(long userId, String state) {
-        return null;
+    public Collection<Booking> getBookingsByBooker(long userId, String state) {
+        userService.get(userId);
+        switch (state) {
+            case "ALL":
+                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
+            case "CURRENT":
+                LocalDateTime now = LocalDateTime.now();
+                return bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId, LocalDateTime.now(),
+                        LocalDateTime.now());
+            case "PAST":
+                return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+            case "FUTURE":
+                return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+            case "WAITING":
+                return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, StatusBooking.WAITING);
+            case "REJECTED":
+                return bookingRepository.findAllByBookerIdAndStatusOrderByStartDesc(userId, StatusBooking.REJECTED);
+            default:
+                throw new BadRequestException("Unknown state: " + state);
+        }
     }
 
     @Override
-    public Collection<BookingDtoResponse> getItemBookingsForOwner(long userId, String state) {
-        return null;
+    public Collection<Booking> getItemBookingsByOwner(long userId, String state) {
+        userService.get(userId);
+        switch (state) {
+            case "ALL":
+                return bookingRepository.findAllByItemOwnerIdOrderByStartDesc(userId);
+            case "CURRENT":
+                return bookingRepository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId, LocalDateTime.now(),
+                                LocalDateTime.now());
+            case "PAST":
+                return bookingRepository.findAllByItemOwnerIdAndEndIsBeforeOrderByStartDesc(userId, LocalDateTime.now());
+            case "FUTURE":
+                return bookingRepository.findAllByItemOwnerIdAndStartIsAfterOrderByStartDesc(userId, LocalDateTime.now());
+            case "WAITING":
+                return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, StatusBooking.WAITING);
+            case "REJECTED":
+                return bookingRepository.findAllByItemOwnerIdAndStatusOrderByStartDesc(userId, StatusBooking.REJECTED);
+            default:
+                throw new BadRequestException("Unknown state: " + state);
+        }
     }
 
     @Override
@@ -80,12 +125,12 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingDtoResponse getLastItemBooking(long itemId, LocalDateTime now) {
+    public Booking getLastItemBooking(long itemId, LocalDateTime now) {
         return null;
     }
 
     @Override
-    public BookingDtoResponse getNextItemBooking(long itemId, LocalDateTime now) {
+    public Booking getNextItemBooking(long itemId, LocalDateTime now) {
         return null;
     }
 
@@ -95,7 +140,17 @@ public class BookingServiceImpl implements BookingService {
         }
         if (booking.getStart().isAfter(booking.getEnd())
                 || booking.getStart().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("The time is incorrect");
+            throw new BadRequestException("Time incorrect");
+        }
+//        if (bookingRepository.findByBrookerIdItemIdTime(booking.getBooker().getId(),
+//                booking.getItem().getId(), booking.getStart()).size() > 0) {
+//            throw new NotFoundException();
+//        }
+        if (bookingRepository.findByItemIdAndTime(booking.getItem().getId(), booking.getStart()).size() > 0) {
+            throw new NotFoundException();
+        }
+        if (bookingRepository.findByBookerIdAndTime(booking.getBooker().getId(), booking.getStart()).size() > 0) {
+            throw new NotFoundException();
         }
     }
 }

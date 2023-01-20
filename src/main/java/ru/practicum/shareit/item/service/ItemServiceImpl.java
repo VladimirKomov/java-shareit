@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -14,7 +13,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.item.ItemMapper.MAP_ITEM;
-import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -29,27 +27,23 @@ public class ItemServiceImpl implements ItemService {
         this.userService = userService;
     }
 
-    public ItemDtoResponse create(long userId, ItemDto data) {
-        data.setOwner(MAP_USER.toUser(userService.get(userId)));
-        return MAP_ITEM.toItemDtoResponse(
-                itemRepository.save(MAP_ITEM.toItem(data)));
+    public Item create(long userId, ItemDto data) {
+        data.setOwner(userService.get(userId));
+        return itemRepository.save(MAP_ITEM.toItem(data));
     }
 
-    public ItemDtoResponse get(long id) {
-        return MAP_ITEM.toItemDtoResponse(
-                itemRepository.findById(id).orElseThrow(NotFoundException::new));
+    public Item get(long id) {
+        return itemRepository.findById(id).orElseThrow(NotFoundException::new);
     }
 
-    public ItemDtoResponse update(long userId, long id, ItemDto data) {
+    public Item update(long userId, long id, ItemDto data) {
         validate(userId,
                 MAP_ITEM.toItemDto(itemRepository.findById(id).orElseThrow(NotFoundException::new)));
-        data = updateValues(id, data);
-        itemRepository.save(MAP_ITEM.toItem(data));
-        return MAP_ITEM.toItemDtoResponse(data);
+        return itemRepository.save(updateValues(id, MAP_ITEM.toItem(data)));
     }
 
-    protected ItemDto updateValues(long id, ItemDto data) {
-        var target = MAP_ITEM.toItemDto(itemRepository.findById(id).orElseThrow(NotFoundException::new));
+    protected Item updateValues(long id, Item data) {
+        var target = itemRepository.findById(id).orElseThrow(NotFoundException::new);
         MAP_ITEM.update(data, target);
 
         return target;
@@ -69,25 +63,16 @@ public class ItemServiceImpl implements ItemService {
                 itemRepository.findById(data.getId()).orElseThrow(NotFoundException::new).getOwner().getId()) {
             throw new NotFoundException();
         }
-
     }
 
-    public Collection<ItemDtoResponse> getAllItemByUserId(long userId) {
+    public Collection<Item> getAllItemByUserId(long userId) {
         return itemRepository.findAll().stream()
                 .filter(i -> i.getOwner().getId() == userId)
-                .map(MAP_ITEM::toItemDtoResponse)
                 .collect(Collectors.toList());
     }
 
-    public Collection<ItemDtoResponse> getBySubstring(String substr) {
-//        final String lowerCaseSubstr = substr.toLowerCase();
-//        return lowerCaseSubstr.isBlank() ? List.of() : itemRepository.findAll().stream()
-//                .filter(i -> i.getDescription().toLowerCase().contains(lowerCaseSubstr))
-//                .filter(Item::getAvailable)
-//                .map(ItemMapper.MAP::toItemDtoResponse)
-//                .collect(Collectors.toList());
+    public Collection<Item> getBySubstring(String substr) {
         return substr.isBlank() ? List.of() : itemRepository.searchAvailableByNameAndDescription(substr).stream()
-                .map(MAP_ITEM::toItemDtoResponse)
                 .collect(Collectors.toList());
     }
 }

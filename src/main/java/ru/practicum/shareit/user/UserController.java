@@ -11,6 +11,9 @@ import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.constraints.Min;
 import java.util.Collection;
+import java.util.stream.Collectors;
+
+import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
 /**
  * TODO Sprint add-controllers.
@@ -27,26 +30,28 @@ public class UserController {
     @PostMapping
     public UserDto addUser(@Validated(Create.class) @RequestBody UserDto userDto) {
         log.info("Create {}", userDto.toString());
-        return userService.create(userDto);
+        return MAP_USER.toUserDto(userService.create(userDto));
     }
 
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable @Min(0) long userId,
                               @Validated(Update.class) @RequestBody UserDto userDto) {
         log.info("Update {}", userDto.toString());
-        return userService.update(userId, userDto);
+        return MAP_USER.toUserDto(userService.update(userId, userDto));
     }
 
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable @Min(0) long userId) {
         log.info("GET Item id={}", userId);
-        return userService.get(userId);
+        return MAP_USER.toUserDto(userService.get(userId));
     }
 
     @GetMapping
     public Collection<UserDto> getAllUsers() {
         log.info("Items size {}", userService.getSize());
-        return userService.getAll();
+        return userService.getAll().stream()
+                .map(MAP_USER::toUserDto)
+                .collect(Collectors.toList());
     }
 
     @DeleteMapping("/{userId}")
