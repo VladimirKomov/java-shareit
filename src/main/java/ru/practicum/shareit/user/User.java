@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -21,6 +22,7 @@ public class User {
     private String name;
     @Email
     @NotBlank
+    @Column(name = "email", unique = true)
     private String email;
 
     @Override

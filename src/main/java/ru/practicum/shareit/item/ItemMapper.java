@@ -7,6 +7,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
 
 @Mapper(componentModel = "spring", uses = ItemMapper.class,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -23,6 +24,8 @@ public interface ItemMapper {
     ItemDtoResponse toItemDtoResponse(Item item);
 
     ItemDtoResponse toItemDtoResponse(ItemDto itemDto);
+
+    ItemDtoResponseLong toItemDtoRespLong(Item item);
 
     @Mapping(target = "id", ignore = true)
     void update(Item donor, @MappingTarget Item target);

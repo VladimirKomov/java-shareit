@@ -15,6 +15,7 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Comparator;
 
 import static ru.practicum.shareit.booking.BookingMapper.MAP_BOOKING;
 
@@ -31,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
     public Booking create(long userId, BookingDtoRequest bookingDto) {
         Booking booking = MAP_BOOKING.toBooking(bookingDto);
         booking.setBooker(userService.get(userId));
-        booking.setItem(itemService.get(bookingDto.getItemId()));
+        booking.setItem(itemService.getEntity(bookingDto.getItemId()));
 //        if (!booking.getItem().getAvailable()) {
 //            throw new BadRequestException("Недоступно для бронирования");
 //        }
@@ -126,11 +127,17 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking getLastItemBooking(long itemId, LocalDateTime now) {
+//        return bookingRepository.findLastItemBooking (itemId, now).stream()
+//                .max(Comparator.comparing(Booking::getEnd))
+//                .orElse(null);
         return null;
     }
 
     @Override
     public Booking getNextItemBooking(long itemId, LocalDateTime now) {
+//        return bookingRepository.findNextItemBooking(itemId, now).stream()
+//                .min(Comparator.comparing(Booking::getStart))
+//                .orElse(null);
         return null;
     }
 
@@ -138,19 +145,26 @@ public class BookingServiceImpl implements BookingService {
         if (!booking.getItem().getAvailable()) {
             throw new BadRequestException("Not available for booking");
         }
-        if (booking.getStart().isAfter(booking.getEnd())
-                || booking.getStart().isBefore(LocalDateTime.now())) {
-            throw new BadRequestException("Time incorrect");
+       if (booking.getStart().isAfter(booking.getEnd())
+               || (booking.getStart().isBefore(LocalDateTime.now()))) {
+           throw new BadRequestException("Time incorrect");
+       }
+
+        if (!booking.getItem().getAvailable()) {
+            throw new BadRequestException("Item incorrect");
+        }
+        if (booking.getBooker().getId() == booking.getItem().getOwner().getId()) {
+            throw new NotFoundException();
         }
 //        if (bookingRepository.findByBrookerIdItemIdTime(booking.getBooker().getId(),
 //                booking.getItem().getId(), booking.getStart()).size() > 0) {
 //            throw new NotFoundException();
 //        }
-        if (bookingRepository.findByItemIdAndTime(booking.getItem().getId(), booking.getStart()).size() > 0) {
-            throw new NotFoundException();
-        }
-        if (bookingRepository.findByBookerIdAndTime(booking.getBooker().getId(), booking.getStart()).size() > 0) {
-            throw new NotFoundException();
-        }
+//        if (bookingRepository.findByItemIdAndTime(booking.getItem().getId(), booking.getStart()).size() > 0) {
+//            throw new NotFoundException();
+//        }
+//        if (bookingRepository.findByBookerIdAndTime(booking.getBooker().getId(), booking.getStart()).size() > 0) {
+//            throw new NotFoundException();
+//        }
     }
 }

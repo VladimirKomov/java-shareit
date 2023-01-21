@@ -3,19 +3,22 @@ package ru.practicum.shareit.item.service;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
 
 import java.util.Collection;
 
 public interface ItemService {
-    Item create(long userId, ItemDto itemDto);
+    ItemDtoResponse create(long userId, ItemDto itemDto);
 
-    Item update(long userId, long itemId, ItemDto itemDto);
+    ItemDtoResponse update(long userId, long itemId, ItemDto itemDto);
 
-    Item get(long id);
+    ItemDtoResponseLong get(long userId, long itemId);
 
-    Collection<Item> getAllItemByUserId(long id);
+    Item getEntity (long id);
 
-    Collection<Item> getBySubstring(String substring);
+    Collection<ItemDtoResponseLong> getAllItemByUserId(long id);
+
+    Collection<ItemDtoResponse> getBySubstring(String substring);
 
     void delete(long id);
 

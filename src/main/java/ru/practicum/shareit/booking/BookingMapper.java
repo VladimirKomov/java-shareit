@@ -3,6 +3,7 @@ package ru.practicum.shareit.booking;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -32,6 +33,11 @@ public interface BookingMapper {
 //    }
 
     BookingDtoResponse toBookingDtoResponse(Booking booking);
+
+    @Mapping(target = "bookerId", source = "booker.id")
+    @Mapping(target = "itemId", source = "item.id")
+    BookingDtoRepository toBookingDtoRepository(Booking booking);
+
 
    //    @Mapping(target = "id", ignore = true)
 //    void update(ItemDto donor, @MappingTarget ItemDto target);

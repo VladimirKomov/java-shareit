@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
@@ -28,7 +29,7 @@ public class ItemController {
     public ItemDtoResponse addItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                    @Valid @RequestBody ItemDto itemDto) {
         log.info("Create {} by userId={}", itemDto.toString(), userId);
-        return MAP_ITEM.toItemDtoResponse(itemService.create(userId, itemDto));
+        return itemService.create(userId, itemDto);
     }
 
     @PatchMapping("/{itemId}")
@@ -36,29 +37,33 @@ public class ItemController {
                                       @PathVariable @Min(0) long itemId,
                                       @RequestBody ItemDto itemDto) {
         log.info("Update {}", itemDto.toString());
-        return MAP_ITEM.toItemDtoResponse(itemService.update(userId, itemId, itemDto));
+        return itemService.update(userId, itemId, itemDto);
     }
+
+//    @GetMapping("/{itemId}")
+//    public ItemDtoResponse getItemById(@PathVariable @Min(0) long itemId) {
+//        log.info("GET Item id={}", itemId);
+//        return itemService.get(itemId);
+//    }
 
     @GetMapping("/{itemId}")
-    public ItemDtoResponse getItemById(@PathVariable @Min(0) long itemId) {
+    public ItemDtoResponseLong getItemById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+            @PathVariable @Min(0) long itemId) {
         log.info("GET Item id={}", itemId);
-        return MAP_ITEM.toItemDtoResponse(itemService.get(itemId));
+        return itemService.get(userId, itemId);
     }
 
+
     @GetMapping
-    public Collection<ItemDtoResponse> getAllItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
+    public Collection<ItemDtoResponseLong> getAllItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
         log.info("Items size {}", itemService.getSize());
-        return itemService.getAllItemByUserId(userId).stream()
-                .map(MAP_ITEM::toItemDtoResponse)
-                .collect(Collectors.toList());
+        return itemService.getAllItemByUserId(userId);
     }
 
     @GetMapping("/search")
     public Collection<ItemDtoResponse> searchBySubstring(@RequestParam String text) {
         log.info("Search by text={}", text);
-        return itemService.getBySubstring(text).stream()
-                .map(MAP_ITEM::toItemDtoResponse)
-                .collect(Collectors.toList());
+        return itemService.getBySubstring(text);
     }
 
     @DeleteMapping("/{itemId}")
