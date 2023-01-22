@@ -76,7 +76,7 @@ public class ItemServiceImpl implements ItemService {
         if (bookings.size() == 0) throw new BadRequestException("Booking not found");
 
         Comment comment = MAP_COMMENT.toComment(commentDto);
-        Booking booking = bookings.stream().toList().get(0);
+        Booking booking = bookings.stream().findFirst().get();
         comment.setUser(booking.getBooker());
         comment.setItem(booking.getItem());
         comment.setCreated(LocalDateTime.now());
