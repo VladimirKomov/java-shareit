@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 @Data
 public class ItemDtoResponseLong {
@@ -22,5 +23,6 @@ public class ItemDtoResponseLong {
     private Boolean available;
     private BookingDtoRepository lastBooking;
     private BookingDtoRepository nextBooking;
+    private Collection<CommentDtoResponse> comments;
 
 }

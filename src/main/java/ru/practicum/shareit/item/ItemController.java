@@ -4,17 +4,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
-import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.Collection;
-import java.util.stream.Collectors;
-
-import static ru.practicum.shareit.item.ItemMapper.MAP_ITEM;
 
 @Slf4j
 @Validated
@@ -40,12 +35,6 @@ public class ItemController {
         return itemService.update(userId, itemId, itemDto);
     }
 
-//    @GetMapping("/{itemId}")
-//    public ItemDtoResponse getItemById(@PathVariable @Min(0) long itemId) {
-//        log.info("GET Item id={}", itemId);
-//        return itemService.get(itemId);
-//    }
-
     @GetMapping("/{itemId}")
     public ItemDtoResponseLong getItemById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
             @PathVariable @Min(0) long itemId) {
@@ -70,6 +59,14 @@ public class ItemController {
     public void deleteItemById(@PathVariable @Min(0) long itemId) {
         log.info("Delete by id={}", itemId);
         itemService.delete(itemId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoResponse addComment(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+                                         @PathVariable @Min(0) long itemId,
+                                         @Valid @RequestBody CommentDto commentDto) {
+        log.info("Create {} by userId={} for itemId={}", commentDto.toString(), userId, itemId);
+        return itemService.create(userId, itemId, commentDto);
     }
 
 }
