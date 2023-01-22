@@ -12,15 +12,13 @@ public interface ItemService {
 
     ItemDtoResponseLong get(long userId, long itemId);
 
-    Item getEntity (long id);
+    Item getEntity(long id);
 
     Collection<ItemDtoResponseLong> getAllItemByUserId(long id);
 
     Collection<ItemDtoResponse> getBySubstring(String substring);
 
     void delete(long id);
-
-    int getSize();
 
     CommentDtoResponse create(long userId, long itemId, CommentDto commentDto);
 }

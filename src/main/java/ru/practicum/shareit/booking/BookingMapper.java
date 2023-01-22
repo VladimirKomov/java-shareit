@@ -1,15 +1,12 @@
 package ru.practicum.shareit.booking;
 
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 import org.mapstruct.factory.Mappers;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
-import ru.practicum.shareit.item.dto.ItemDto;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 
 
 @Mapper(componentModel = "spring",
@@ -18,29 +15,12 @@ public interface BookingMapper {
 
     BookingMapper MAP_BOOKING = Mappers.getMapper(BookingMapper.class);
 
-//    @Mapping(target = "start", source = "start", qualifiedByName = "toTimestamp")
-//    @Mapping(target = "end", source = "end", qualifiedByName = "toTimestamp")
     Booking toBooking(BookingDtoRequest bookingDtoRequest);
-
-//    @Named("toTimestamp")
-//    default Timestamp toTimestamp(LocalDateTime localDateTime) {
-//        return Timestamp.valueOf(localDateTime);
-//    }
-
-//    @Named("toTimestamp")
-//    default LocalDateTime toTimestamp(LocalDateTime localDateTime) {
-//        return localDateTime;
-//    }
 
     BookingDtoResponse toBookingDtoResponse(Booking booking);
 
     @Mapping(target = "bookerId", source = "booker.id")
     @Mapping(target = "itemId", source = "item.id")
     BookingDtoRepository toBookingDtoRepository(Booking booking);
-
-
-   //    @Mapping(target = "id", ignore = true)
-//    void update(ItemDto donor, @MappingTarget ItemDto target);
-
 
 }

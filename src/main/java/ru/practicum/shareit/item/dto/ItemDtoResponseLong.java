@@ -1,10 +1,7 @@
 package ru.practicum.shareit.item.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingDtoRepository;
-import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

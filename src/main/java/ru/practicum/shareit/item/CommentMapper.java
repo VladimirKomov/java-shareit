@@ -17,6 +17,4 @@ public interface CommentMapper {
     @Mapping(target = "authorName", source = "user.name")
     CommentDtoResponse toDtoResponse(Comment comment);
 
-//    @Mapping(target = "authorName", source = "user.name")
-//    List<CommentDto> toDto(Iterable<Comment> Comment);
 }

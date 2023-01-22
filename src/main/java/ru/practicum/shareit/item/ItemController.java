@@ -37,7 +37,7 @@ public class ItemController {
 
     @GetMapping("/{itemId}")
     public ItemDtoResponseLong getItemById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-            @PathVariable @Min(0) long itemId) {
+                                           @PathVariable @Min(0) long itemId) {
         log.info("GET Item id={}", itemId);
         return itemService.get(userId, itemId);
     }
@@ -45,7 +45,7 @@ public class ItemController {
 
     @GetMapping
     public Collection<ItemDtoResponseLong> getAllItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
-        log.info("Items size {}", itemService.getSize());
+        log.info("Items getAll");
         return itemService.getAllItemByUserId(userId);
     }
 

@@ -21,9 +21,8 @@ public class UserDto {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof UserDto)) return false;
+        if (!(o instanceof UserDto userDto)) return false;
         if (!super.equals(o)) return false;
-        UserDto userDto = (UserDto) o;
         return email.equals(userDto.email);
     }
 

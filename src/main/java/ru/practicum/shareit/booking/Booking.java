@@ -5,12 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.Item;
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Data
 @AllArgsConstructor
@@ -34,16 +32,4 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     private StatusBooking status;
 
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof Booking)) return false;
-//        Booking booking = (Booking) o;
-//        return end.isAfter(booking.start) && item.equals(booking.item) && booker.equals(booking.booker);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(item, booker);
-//    }
 }

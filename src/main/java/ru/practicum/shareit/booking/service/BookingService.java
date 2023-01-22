@@ -1,29 +1,20 @@
 package ru.practicum.shareit.booking.service;
 
-import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
+import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 public interface BookingService {
 
-    Booking create(long userId, BookingDtoRequest bookingDto);
+    BookingDtoResponse create(long userId, BookingDtoRequest bookingDto);
 
-    Booking approve(long ownerId, long bookingId, boolean approved);
+    BookingDtoResponse approve(long ownerId, long bookingId, boolean approved);
 
-    Booking getById(long bookingId);
+    BookingDtoResponse getBookingById(long bookingId, long userId);
 
-    Booking getBookingById(long bookingId, long userId);
+    Collection<BookingDtoResponse> getBookingsByBooker(long userId, String state);
 
-    Collection<Booking> getBookingsByBooker(long userId, String state);
-
-    Collection<Booking> getItemBookingsByOwner(long userId, String state);
-
-    boolean isUserEqualsOwnerBooking(long userId, long bookingId);
-
-    Booking getLastItemBooking(long itemId, LocalDateTime now);
-
-    Booking getNextItemBooking(long itemId, LocalDateTime now);
+    Collection<BookingDtoResponse> getItemBookingsByOwner(long userId, String state);
 
 }
