@@ -10,9 +10,6 @@ import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.constraints.Min;
 import java.util.Collection;
-import java.util.stream.Collectors;
-
-import static ru.practicum.shareit.booking.BookingMapper.MAP_BOOKING;
 
 
 @Slf4j

@@ -112,8 +112,8 @@ public class ItemServiceImpl implements ItemService {
 
         itemDtoLong.setLastBooking(MAP_BOOKING.toBookingDtoRepository(bookingLast));
         itemDtoLong.setNextBooking(MAP_BOOKING.toBookingDtoRepository(bookingNext));
-        itemDtoLong.setComments(comments.stream().
-                map(MAP_COMMENT::toDtoResponse)
+        itemDtoLong.setComments(comments.stream()
+                .map(MAP_COMMENT::toDtoResponse)
                 .collect(Collectors.toList()));
 
         return itemDtoLong;
