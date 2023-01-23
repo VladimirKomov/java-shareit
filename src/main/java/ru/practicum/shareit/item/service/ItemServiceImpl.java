@@ -73,10 +73,10 @@ public class ItemServiceImpl implements ItemService {
         Collection<Booking> bookings = bookingRepository
                 .findAllByBookerIdAndItemIdAndStatusAndStartBeforeOrderByStartDesc(userId, itemId,
                         StatusBooking.APPROVED, LocalDateTime.now());
-        if (bookings.size() == 0) throw new BadRequestException("Booking not found");
+        Booking booking = bookings.stream()
+                .findFirst().orElseThrow(BadRequestException::new);
 
         Comment comment = MAP_COMMENT.toComment(commentDto);
-        Booking booking = bookings.stream().findFirst().get();
         comment.setUser(booking.getBooker());
         comment.setItem(booking.getItem());
         comment.setCreated(LocalDateTime.now());
@@ -91,11 +91,10 @@ public class ItemServiceImpl implements ItemService {
     }
 
     public Collection<ItemDtoResponseLong> getAllItemByUserId(long userId) {
-        return itemRepository.findItemsByOwnerIdOrderById(userId).stream()
-                .map(MAP_ITEM::toItemDtoRespLong)
+        return MAP_ITEM.toCollectionItemDtoResponseLong(
+                        itemRepository.findItemsByOwnerIdOrderById(userId)).stream()
                 .map(i -> setBookings(i, userId))
                 .collect(Collectors.toList());
-
     }
 
     public Collection<ItemDtoResponse> getBySubstring(String substr) {

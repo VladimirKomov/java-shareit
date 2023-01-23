@@ -21,17 +21,13 @@ public interface ItemMapper {
 
     Item toItem(ItemDto itemDto);
 
-    Item toItem(ItemDtoResponse itemDtoResponse);
-
     ItemDtoResponse toItemDtoResponse(Item item);
-
-    ItemDtoResponse toItemDtoResponse(ItemDto itemDto);
 
     ItemDtoResponseLong toItemDtoRespLong(Item item);
 
     Collection<ItemDtoResponse> toCollectionItemDtoResponse(Collection<Item> items);
 
-    //Collection<ItemDtoResponseLong> toCollectionItemDtoResponseLong();
+    Collection<ItemDtoResponseLong> toCollectionItemDtoResponseLong(Collection<Item> items);
 
     @Mapping(target = "id", ignore = true)
     void update(Item donor, @MappingTarget Item target);
