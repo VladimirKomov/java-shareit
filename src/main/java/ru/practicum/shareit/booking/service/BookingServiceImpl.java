@@ -75,7 +75,6 @@ public class BookingServiceImpl implements BookingService {
             case "ALL":
                 return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
             case "CURRENT":
-                LocalDateTime now = LocalDateTime.now();
                 return bookingRepository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userId, LocalDateTime.now(),
                         LocalDateTime.now());
             case "PAST":
