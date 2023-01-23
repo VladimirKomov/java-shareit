@@ -8,6 +8,8 @@ import ru.practicum.shareit.booking.dto.BookingDtoRepository;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 
+import java.util.Collection;
+
 
 @Mapper(componentModel = "spring",
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
@@ -18,6 +20,8 @@ public interface BookingMapper {
     Booking toBooking(BookingDtoRequest bookingDtoRequest);
 
     BookingDtoResponse toBookingDtoResponse(Booking booking);
+
+    Collection<BookingDtoResponse> toCollectionBookingDtoResponse(Collection<Booking> bookings);
 
     @Mapping(target = "bookerId", source = "booker.id")
     @Mapping(target = "itemId", source = "item.id")

@@ -95,12 +95,14 @@ public class ItemServiceImpl implements ItemService {
                 .map(MAP_ITEM::toItemDtoRespLong)
                 .map(i -> setBookings(i, userId))
                 .collect(Collectors.toList());
+
     }
 
     public Collection<ItemDtoResponse> getBySubstring(String substr) {
-        return substr.isBlank() ? List.of() : itemRepository.searchAvailableByNameAndDescription(substr).stream()
-                .map(MAP_ITEM::toItemDtoResponse)
-                .collect(Collectors.toList());
+        return substr.isBlank() ? List.of() :
+                MAP_ITEM.toCollectionItemDtoResponse(
+                        itemRepository.searchAvailableByNameAndDescription(substr));
+
     }
 
     private ItemDtoResponseLong setBookings(ItemDtoResponseLong itemDtoLong, long userId) {

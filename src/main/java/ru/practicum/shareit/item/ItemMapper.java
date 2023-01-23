@@ -9,6 +9,8 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
 
+import java.util.Collection;
+
 @Mapper(componentModel = "spring", uses = ItemMapper.class,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ItemMapper {
@@ -26,6 +28,10 @@ public interface ItemMapper {
     ItemDtoResponse toItemDtoResponse(ItemDto itemDto);
 
     ItemDtoResponseLong toItemDtoRespLong(Item item);
+
+    Collection<ItemDtoResponse> toCollectionItemDtoResponse(Collection<Item> items);
+
+    //Collection<ItemDtoResponseLong> toCollectionItemDtoResponseLong();
 
     @Mapping(target = "id", ignore = true)
     void update(Item donor, @MappingTarget Item target);

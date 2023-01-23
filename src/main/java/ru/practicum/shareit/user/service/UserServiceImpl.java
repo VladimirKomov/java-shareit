@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
@@ -35,9 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public Collection<UserDto> getAll() {
-        return repository.findAll().stream()
-                .map(MAP_USER::toUserDto)
-                .collect(Collectors.toList());
+        return MAP_USER.toCollectionUserDto(repository.findAll());
     }
 
     protected User updateValues(long id, UserDto data) {

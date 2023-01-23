@@ -14,7 +14,6 @@ import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import static ru.practicum.shareit.booking.BookingMapper.MAP_BOOKING;
 import static ru.practicum.shareit.user.UserMapper.MAP_USER;
@@ -64,9 +63,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Collection<BookingDtoResponse> getBookingsByBooker(long userId, String state) {
         userService.get(userId);
-        return findBookingsByBooker(userId, state).stream()
-                .map(MAP_BOOKING::toBookingDtoResponse)
-                .collect(Collectors.toList());
+        return MAP_BOOKING.toCollectionBookingDtoResponse(findBookingsByBooker(userId, state));
 
     }
 
@@ -93,9 +90,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Collection<BookingDtoResponse> getItemBookingsByOwner(long userId, String state) {
         userService.get(userId);
-        return findBookingsByOwner(userId, state).stream()
-                .map(MAP_BOOKING::toBookingDtoResponse)
-                .collect(Collectors.toList());
+        return MAP_BOOKING.toCollectionBookingDtoResponse(findBookingsByOwner(userId, state));
     }
 
     private Collection<Booking> findBookingsByOwner(long userId, String state) {
