@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor()
 @Entity
 @Table(name = "users")
 public class User {

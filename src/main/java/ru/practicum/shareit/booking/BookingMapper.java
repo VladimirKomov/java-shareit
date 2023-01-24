@@ -11,7 +11,7 @@ import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import java.util.Collection;
 
 
-@Mapper(componentModel = "spring",
+@Mapper(componentModel = "spring", uses = BookingMapper.class,
         nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface BookingMapper {
 

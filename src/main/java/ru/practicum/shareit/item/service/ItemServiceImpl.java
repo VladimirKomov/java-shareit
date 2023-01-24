@@ -35,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     public ItemDtoResponse create(long userId, ItemDto data) {
-        data.setOwner(MAP_USER.toUser(userService.get(userId)));
+        data.setOwner(userService.get(userId));
         return MAP_ITEM.toItemDtoResponse(
                 itemRepository.save(MAP_ITEM.toItem(data)));
     }
