@@ -4,16 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.Collection;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Slf4j
 @Validated
 @RestController
@@ -39,14 +36,16 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemDtoResponse getItemById(@PathVariable @Min(0) long itemId) {
+    public ItemDtoResponseLong getItemById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+                                           @PathVariable @Min(0) long itemId) {
         log.info("GET Item id={}", itemId);
-        return itemService.get(itemId);
+        return itemService.get(userId, itemId);
     }
 
+
     @GetMapping
-    public Collection<ItemDtoResponse> getAllItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
-        log.info("Items size {}", itemService.getSize());
+    public Collection<ItemDtoResponseLong> getAllItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
+        log.info("Items getAll");
         return itemService.getAllItemByUserId(userId);
     }
 
@@ -60,6 +59,14 @@ public class ItemController {
     public void deleteItemById(@PathVariable @Min(0) long itemId) {
         log.info("Delete by id={}", itemId);
         itemService.delete(itemId);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentDtoResponse addComment(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+                                         @PathVariable @Min(0) long itemId,
+                                         @Valid @RequestBody CommentDto commentDto) {
+        log.info("Create {} by userId={} for itemId={}", commentDto.toString(), userId, itemId);
+        return itemService.create(userId, itemId, commentDto);
     }
 
 }

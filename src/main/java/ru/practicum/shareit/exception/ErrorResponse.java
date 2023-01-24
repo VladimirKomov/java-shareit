@@ -2,20 +2,20 @@ package ru.practicum.shareit.exception;
 
 
 public class ErrorResponse {
+    String code;
     String error;
-    String description;
 
-    public ErrorResponse(String error, String description) {
+    public ErrorResponse(String code, String error) {
+        this.code = code;
         this.error = error;
-        this.description = description;
+    }
+
+    public String getCode() {
+        return code;
     }
 
     public String getError() {
         return error;
-    }
-
-    public String getDescription() {
-        return description;
     }
 
 }

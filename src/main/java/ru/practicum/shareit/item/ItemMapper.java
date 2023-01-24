@@ -1,27 +1,34 @@
 package ru.practicum.shareit.item;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
 
-public class ItemMapper {
+import java.util.Collection;
 
-    public static ItemDto toItemDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
-                item.getOwner(), item.getRequest());
-    }
+@Mapper(componentModel = "spring", uses = ItemMapper.class,
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+public interface ItemMapper {
 
-    public static Item toItem(ItemDto itemDto) {
-        return new Item(itemDto.getId(), itemDto.getName(), itemDto.getDescription(), itemDto.getAvailable(),
-                itemDto.getOwner(), itemDto.getRequest());
-    }
+    ItemMapper MAP_ITEM = Mappers.getMapper(ItemMapper.class);
 
-    public static ItemDtoResponse toItemDtoResponse(Item item) {
-        return new ItemDtoResponse(item.getId(), item.getName(), item.getDescription(), item.getAvailable());
-    }
+    ItemDto toItemDto(Item item);
 
-    public static ItemDtoResponse toItemDtoResponse(ItemDto itemDto) {
-        return new ItemDtoResponse(itemDto.getId(), itemDto.getName(),
-                itemDto.getDescription(), itemDto.getAvailable());
-    }
+    Item toItem(ItemDto itemDto);
 
+    ItemDtoResponse toItemDtoResponse(Item item);
+
+    ItemDtoResponseLong toItemDtoRespLong(Item item);
+
+    Collection<ItemDtoResponse> toCollectionItemDtoResponse(Collection<Item> items);
+
+    Collection<ItemDtoResponseLong> toCollectionItemDtoResponseLong(Collection<Item> items);
+
+    @Mapping(target = "id", ignore = true)
+    void update(Item donor, @MappingTarget Item target);
 }

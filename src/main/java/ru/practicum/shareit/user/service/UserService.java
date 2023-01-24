@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.service;
 
 import ru.practicum.shareit.user.dto.UserDto;
 
@@ -16,5 +16,4 @@ public interface UserService {
 
     void delete(long id);
 
-    int getSize();
 }

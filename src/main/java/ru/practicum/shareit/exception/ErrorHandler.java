@@ -1,6 +1,7 @@
 package ru.practicum.shareit.exception;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,25 +22,17 @@ public class ErrorHandler {
         return new ErrorResponse(HttpStatus.NOT_FOUND.toString(), e.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({DataIntegrityViolationException.class, ValidationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse notValidateException(final ValidationException e) {
+    public ErrorResponse notValidateException(final RuntimeException e) {
         log.info(HttpStatus.CONFLICT + " {}", e.getMessage());
         return new ErrorResponse(HttpStatus.CONFLICT.toString(), e.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class,
+            BadRequestException.class, StateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse argumentNotValidateException(final MethodArgumentNotValidException e) {
-        log.info(HttpStatus.BAD_REQUEST + " {}", e.getMessage());
-        String message = e.getBindingResult().getFieldError().getField() + ": "
-                + e.getBindingResult().getFieldError().getDefaultMessage() + ".";
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), message);
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse notTypeValidateException(final MethodArgumentTypeMismatchException e) {
+    public ErrorResponse badRequestException(final RuntimeException e) {
         log.info(HttpStatus.BAD_REQUEST + " {}", e.getMessage());
         return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
     }

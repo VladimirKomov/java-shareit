@@ -1,29 +1,28 @@
 package ru.practicum.shareit.user;
 
+import lombok.AccessLevel;
 import lombok.Data;
-import ru.practicum.shareit.model.BaseModel;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Data
-public class User extends BaseModel {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Table(name = "users")
+public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String name;
     @Email
     @NotBlank
+    @Column(name = "email", unique = true)
     private String email;
-
-    public User(long id, String name, String email) {
-        setId(id);
-        this.name = name;
-        this.email = email;
-    }
 
     @Override
     public boolean equals(Object o) {

@@ -1,26 +1,28 @@
 package ru.practicum.shareit.item;
 
-import lombok.Data;
-import ru.practicum.shareit.model.BaseModel;
+import lombok.*;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 
-/**
- * TODO Sprint add-controllers.
- */
+import javax.persistence.*;
+
 @Data
-public class Item extends BaseModel {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@Table(name = "items")
+public class Item {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     private String name;
     private String description;
     private Boolean available;
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
     private User owner;
-    private String request;
+    @ManyToOne
+    @JoinColumn(name = "request_id")
+    private ItemRequest request;
 
-    public Item(long id, String name, String description, Boolean available, User owner, String request) {
-        setId(id);
-        this.name = name;
-        this.description = description;
-        this.available = available;
-        this.owner = owner;
-        this.request = request;
-    }
 }
