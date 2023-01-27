@@ -20,6 +20,9 @@ public class ItemController {
 
     private final ItemService itemService;
 
+    /**
+     * Создаёт объект вещи пользователя userId
+     */
     @PostMapping
     public ItemDtoResponse addItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                    @Valid @RequestBody ItemDto itemDto) {
@@ -27,6 +30,9 @@ public class ItemController {
         return itemService.create(userId, itemDto);
     }
 
+    /**
+     * Создаёт комментарий вещи пользователя userId после бронирования
+     */
     @PatchMapping("/{itemId}")
     public ItemDtoResponse updateItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                       @PathVariable @Min(0) long itemId,
@@ -35,6 +41,9 @@ public class ItemController {
         return itemService.update(userId, itemId, itemDto);
     }
 
+    /**
+     * Возвращает вещь по itemId независимо от userId пользователя
+     */
     @GetMapping("/{itemId}")
     public ItemDtoResponseLong getItemById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                            @PathVariable @Min(0) long itemId) {
@@ -42,25 +51,36 @@ public class ItemController {
         return itemService.get(userId, itemId);
     }
 
-
+    /**
+     * Возвращает список всех вещей пользователя userId
+     */
     @GetMapping
     public Collection<ItemDtoResponseLong> getAllItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
         log.info("Items getAll");
         return itemService.getAllItemByUserId(userId);
     }
 
+    /**
+     * Возвращает список по введенному тексту поиска text
+     */
     @GetMapping("/search")
     public Collection<ItemDtoResponse> searchBySubstring(@RequestParam String text) {
         log.info("Search by text={}", text);
         return itemService.getBySubstring(text);
     }
 
+    /**
+     * Удаляет объект вещи itemId пользователя userId
+     */
     @DeleteMapping("/{itemId}")
     public void deleteItemById(@PathVariable @Min(0) long itemId) {
         log.info("Delete by id={}", itemId);
         itemService.delete(itemId);
     }
 
+    /**
+     * Создаёт комментарий вещи пользователя userId после бронирования
+     */
     @PostMapping("/{itemId}/comment")
     public CommentDtoResponse addComment(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                          @PathVariable @Min(0) long itemId,

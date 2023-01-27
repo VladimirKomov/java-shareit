@@ -24,12 +24,18 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * Создаёт объект пользователя
+     */
     @PostMapping
     public UserDto addUser(@Validated(Create.class) @RequestBody UserDto userDto) {
         log.info("Create {}", userDto.toString());
         return userService.create(userDto);
     }
 
+    /**
+     * Обновляет данные пользователя
+     */
     @PatchMapping("/{userId}")
     public UserDto updateUser(@PathVariable @Min(0) long userId,
                               @Validated(Update.class) @RequestBody UserDto userDto) {
@@ -37,18 +43,27 @@ public class UserController {
         return userService.update(userId, userDto);
     }
 
+    /**
+     * Возвращает объект пользователя по ID
+     */
     @GetMapping("/{userId}")
     public UserDto getUserById(@PathVariable @Min(0) long userId) {
         log.info("GET Item id={}", userId);
         return userService.get(userId);
     }
 
+    /**
+     * Возвращает список объектов всех пользователей
+     */
     @GetMapping
     public Collection<UserDto> getAllUsers() {
         log.info("Items getAll");
         return userService.getAll();
     }
 
+    /**
+     * Удаляет объект пользователя
+     */
     @DeleteMapping("/{userId}")
     public void deleteUser(@PathVariable @Min(0) long userId) {
         log.info("Delete by id={}", userId);

@@ -21,6 +21,9 @@ public class BookingController {
 
     private final BookingService bookingService;
 
+    /**
+     * Создаёт объект бронирования
+     */
     @PostMapping
     public BookingDtoResponse addBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                          @RequestBody BookingDtoRequest bookingDto) {
@@ -28,6 +31,9 @@ public class BookingController {
         return bookingService.create(userId, bookingDto);
     }
 
+    /**
+     * Обновляет статус бронирования bookingId владельца вещи userId
+     */
     @PatchMapping("/{bookingId}")
     public BookingDtoResponse approveBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) long ownerId,
                                              @Min(0) @PathVariable long bookingId,
@@ -36,6 +42,9 @@ public class BookingController {
         return bookingService.approve(ownerId, bookingId, approved);
     }
 
+    /**
+     * Возвращает информацию о брони по bookingId для определенного userId пользователя или владельца вещи
+     */
     @GetMapping("/{bookingId}")
     public BookingDtoResponse getBookingById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                              @Min(0) @PathVariable long bookingId) {
@@ -43,6 +52,9 @@ public class BookingController {
         return bookingService.getBookingById(userId, bookingId);
     }
 
+    /**
+     * Возвращает список всех бронирований для определенного userId пользователя
+     */
     @GetMapping
     public Collection<BookingDtoResponse> getUserBookings(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                                           @RequestParam(defaultValue = "ALL") String state) {
@@ -50,6 +62,9 @@ public class BookingController {
         return bookingService.getBookingsByBooker(userId, state);
     }
 
+    /**
+     * Возвращает список всех бронирований для определенного userId пользователя - владельца вещи
+     */
     @GetMapping("/owner")
     public Collection<BookingDtoResponse> getItemBookingsByOwner(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                                                  @RequestParam(defaultValue = "ALL") String state) {
