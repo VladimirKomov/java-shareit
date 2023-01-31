@@ -1,8 +1,6 @@
 package ru.practicum.shareit.user;
 
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -10,7 +8,8 @@ import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Data
-@NoArgsConstructor()
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
