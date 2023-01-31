@@ -4,6 +4,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.*;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ItemService {
     ItemDtoResponse create(long userId, ItemDto itemDto);
@@ -21,4 +22,6 @@ public interface ItemService {
     void delete(long id);
 
     CommentDtoResponse create(long userId, long itemId, CommentDto commentDto);
+
+    Collection<Item> getByRequests(List<Long> listRequestId);
 }

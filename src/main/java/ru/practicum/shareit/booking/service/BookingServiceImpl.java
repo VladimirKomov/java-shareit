@@ -30,7 +30,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public BookingDtoResponse create(long userId, BookingDtoRequest bookingDto) {
         Booking booking = MAP_BOOKING.toBooking(bookingDto);
-        booking.setBooker(MAP_USER.toUser(userService.get(userId)));
+        booking.setBooker(userService.getEntity(userId));
         booking.setItem(itemService.getEntity(bookingDto.getItemId()));
         validation(booking);
         booking.setStatus(StatusBooking.WAITING);

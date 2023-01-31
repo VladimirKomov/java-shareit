@@ -17,4 +17,8 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     List<Item> searchAvailableByNameAndDescription(String text);
 
     Collection<Item> findItemsByOwnerIdOrderById(long ownerId);
+
+    @Query("select i from Item i " +
+    " where i.request.id in ?1 ")
+    Collection<Item> findItemsByRequestId(List<Long> listRequestId);
 }

@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 import static ru.practicum.shareit.booking.BookingMapper.MAP_BOOKING;
 import static ru.practicum.shareit.item.CommentMapper.MAP_COMMENT;
 import static ru.practicum.shareit.item.ItemMapper.MAP_ITEM;
-import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -81,6 +80,11 @@ public class ItemServiceImpl implements ItemService {
         comment.setItem(booking.getItem());
         comment.setCreated(LocalDateTime.now());
         return MAP_COMMENT.toDtoResponse(commentRepository.save(comment));
+    }
+
+    @Override
+    public Collection<Item> getByRequests(List<Long> listRequestId) {
+        return itemRepository.findItemsByRequestId(listRequestId);
     }
 
     protected void validate(long userId, ItemDto data) {

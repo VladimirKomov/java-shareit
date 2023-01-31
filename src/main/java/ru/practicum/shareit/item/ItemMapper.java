@@ -17,10 +17,12 @@ public interface ItemMapper {
 
     ItemMapper MAP_ITEM = Mappers.getMapper(ItemMapper.class);
 
+    @Mapping(target = "requestId", source = "request.id")
     ItemDto toItemDto(Item item);
 
-    Item toItem(ItemDto itemDto);
+     Item toItem(ItemDto itemDto);
 
+    @Mapping(target = "requestId", source = "request.id")
     ItemDtoResponse toItemDtoResponse(Item item);
 
     ItemDtoResponseLong toItemDtoRespLong(Item item);

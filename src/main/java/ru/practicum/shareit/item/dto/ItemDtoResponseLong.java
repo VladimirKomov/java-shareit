@@ -21,5 +21,6 @@ public class ItemDtoResponseLong {
     private BookingDtoRepository lastBooking;
     private BookingDtoRepository nextBooking;
     private Collection<CommentDtoResponse> comments;
+    private long requestId;
 
 }
