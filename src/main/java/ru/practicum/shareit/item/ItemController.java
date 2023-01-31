@@ -55,18 +55,25 @@ public class ItemController {
      * Возвращает список всех вещей пользователя userId
      */
     @GetMapping
-    public Collection<ItemDtoResponseLong> getAllItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
+    public Collection<ItemDtoResponseLong> getAllItem(
+            @RequestHeader("X-Sharer-User-Id")
+            @Validated @Min(0) long userId,
+            @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
+            @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
         log.info("Items getAll");
-        return itemService.getAllItemByUserId(userId);
+        return itemService.getAllItemByUserId(userId, from, size);
     }
 
     /**
      * Возвращает список по введенному тексту поиска text
      */
     @GetMapping("/search")
-    public Collection<ItemDtoResponse> searchBySubstring(@RequestParam String text) {
+    public Collection<ItemDtoResponse> searchBySubstring(
+            @RequestParam String text,
+            @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
+            @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
         log.info("Search by text={}", text);
-        return itemService.getBySubstring(text);
+        return itemService.getBySubstring(text, from, size);
     }
 
     /**

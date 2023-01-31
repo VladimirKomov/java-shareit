@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.StatusBooking;
@@ -89,7 +90,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Collection<Item> getByRequests(List<Long> listRequestId) {
-        return itemRepository.findItemsByRequestId(listRequestId);
+        return itemRepository.findAllByRequestIdIn(listRequestId);
     }
 
     protected void validate(long userId, ItemDto data) {
@@ -99,17 +100,17 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    public Collection<ItemDtoResponseLong> getAllItemByUserId(long userId) {
+    public Collection<ItemDtoResponseLong> getAllItemByUserId(long userId, int from, int size) {
         return MAP_ITEM.toCollectionItemDtoResponseLong(
-                        itemRepository.findItemsByOwnerIdOrderById(userId)).stream()
+                        itemRepository.findItemsByOwnerIdOrderById(userId, PageRequest.of(from / size, size))).stream()
                 .map(i -> setBookings(i, userId))
                 .collect(Collectors.toList());
     }
 
-    public Collection<ItemDtoResponse> getBySubstring(String substr) {
+    public Collection<ItemDtoResponse> getBySubstring(String substr, int from, int size) {
         return substr.isBlank() ? List.of() :
                 MAP_ITEM.toCollectionItemDtoResponse(
-                        itemRepository.searchAvailableByNameAndDescription(substr));
+                        itemRepository.searchAvailableByNameAndDescription(substr, PageRequest.of(from / size, size)));
 
     }
 

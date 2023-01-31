@@ -15,9 +15,9 @@ public interface ItemService {
 
     Item getEntity(long id);
 
-    Collection<ItemDtoResponseLong> getAllItemByUserId(long id);
+    Collection<ItemDtoResponseLong> getAllItemByUserId(long id, int from, int size);
 
-    Collection<ItemDtoResponse> getBySubstring(String substring);
+    Collection<ItemDtoResponse> getBySubstring(String substring, int from, int size);
 
     void delete(long id);
 

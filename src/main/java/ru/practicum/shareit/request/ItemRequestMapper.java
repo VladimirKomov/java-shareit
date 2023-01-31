@@ -14,9 +14,7 @@ public interface ItemRequestMapper {
 
     ItemRequestMapper MAP_REQUEST = Mappers.getMapper(ItemRequestMapper.class);
 
-    ItemRequest toItemRequest (ItemRequestDto itemRequestDto);
-
-    ItemRequestDto toItemRequestDto(ItemRequest itemRequest);
+    ItemRequest toItemRequest(ItemRequestDto itemRequestDto);
 
     @Mapping(target = "requestor", source = "requestor")
     ItemRequestDtoResponse toItemRequestDtoResponse(ItemRequest itemRequest);
