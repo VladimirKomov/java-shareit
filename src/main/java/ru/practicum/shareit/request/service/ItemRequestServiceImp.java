@@ -3,6 +3,7 @@ package ru.practicum.shareit.request.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
@@ -42,11 +43,37 @@ public class ItemRequestServiceImp implements ItemRequestService {
     @Override
     public Collection<ItemRequestDtoResponse> getRequestsByRequestorId(long userId) {
         userService.getEntity(userId);
-//        return MAP_REQUEST.toCollectionItemRequestDto(
-//                itemRequestRepository.findAllByRequestorIdOrderByCreatedDesc(userId));
         Collection<ItemRequestDtoResponse> itemRequestsDto = MAP_REQUEST.toCollectionItemRequestDto(
                 itemRequestRepository.findAllByRequestorIdOrderByCreatedDesc(userId));
         return setItems(itemRequestsDto);
+    }
+
+
+//    private void setItemsForRequest(ItemRequestDtoResponse requestDtoResponse, Collection<Item> items) {
+//        requestDtoResponse.setItems(
+//                MAP_ITEM.toCollectionItemDtoResponse(
+//                        items.stream()
+//                                .filter(item -> item.getRequest().getId() == requestDtoResponse.getId())
+//                                .collect(Collectors.toList())
+//                )
+//        );
+//    }
+
+    @Override
+    public Collection<ItemRequestDtoResponse> getAll(long userId, int from, int size) {
+        Collection<ItemRequestDtoResponse> itemRequestsDto =  MAP_REQUEST.toCollectionItemRequestDto(
+                itemRequestRepository.findAllByRequestorIdIsNotOrderByCreatedDesc(userId, PageRequest.of(from, size)));
+        return setItems(itemRequestsDto);
+    }
+
+    @Override
+    public ItemRequestDtoResponse getRequestsByRequestId(long userId, long requestId) {
+        userService.getEntity(userId);
+        Collection<ItemRequestDtoResponse> itemRequestsDto = List.of(
+                MAP_REQUEST.toItemRequestDtoResponse(itemRequestRepository.findById(requestId)
+                .orElseThrow(NotFoundException::new)));
+
+        return setItems(itemRequestsDto).stream().findFirst().get();
     }
 
     private Collection<ItemRequestDtoResponse> setItems(Collection<ItemRequestDtoResponse> itemRequestsDto) {
@@ -67,25 +94,6 @@ public class ItemRequestServiceImp implements ItemRequestService {
                 )
         );
 
-
         return itemRequestsDto;
-
-
-    }
-
-    private void setItemsForRequest(ItemRequestDtoResponse requestDtoResponse, Collection<Item> items) {
-        requestDtoResponse.setItems(
-                MAP_ITEM.toCollectionItemDtoResponse(
-                        items.stream()
-                                .filter(item -> item.getRequest().getId() == requestDtoResponse.getId())
-                                .collect(Collectors.toList())
-                )
-        );
-    }
-
-    @Override
-    public Collection<ItemRequestDtoResponse> getAll(long userId, int from, int size) {
-        return MAP_REQUEST.toCollectionItemRequestDto(
-                itemRequestRepository.findAllByRequestorIdOrderByCreatedDesc(userId, PageRequest.of(from, size)));
     }
 }

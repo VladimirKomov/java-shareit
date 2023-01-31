@@ -19,6 +19,7 @@ public interface BookingMapper {
 
     Booking toBooking(BookingDtoRequest bookingDtoRequest);
 
+    @Mapping(target = "item.requestId", source = "item.request.id")
     BookingDtoResponse toBookingDtoResponse(Booking booking);
 
     Collection<BookingDtoResponse> toCollectionBookingDtoResponse(Collection<Booking> bookings);

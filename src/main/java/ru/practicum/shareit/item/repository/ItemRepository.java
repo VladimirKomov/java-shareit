@@ -18,6 +18,7 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Collection<Item> findItemsByOwnerIdOrderById(long ownerId);
 
+    //переделать в самом конце, можно без запроса
     @Query("select i from Item i " +
     " where i.request.id in ?1 ")
     Collection<Item> findItemsByRequestId(List<Long> listRequestId);

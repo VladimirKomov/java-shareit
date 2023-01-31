@@ -46,11 +46,11 @@ public class ItemRequestController {
      * Возвращает запрос по userId и requestId
      */
     @GetMapping("/{requestId}")
-    public ItemRequestDto getItemRequestById(
+    public ItemRequestDtoResponse getItemRequestById(
             @Validated @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
             @Min(0) @PathVariable long requestId) {
         log.info("ItemRequest get by userId={} and requestId={}", userId, requestId);
-        return null;
+        return itemRequestService.getRequestsByRequestId(userId, requestId);
     }
 
     /**
