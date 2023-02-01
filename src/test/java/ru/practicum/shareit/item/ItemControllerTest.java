@@ -6,20 +6,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.CommentDtoResponse;
+import ru.practicum.shareit.item.dto.ItemDtoResponse;
+import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.user.dto.UserDto;
 
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,16 +26,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ItemController.class)
 public class ItemControllerTest {
 
+    ItemDtoResponse itemDtoResponse;
+    ItemDtoResponseLong itemDtoResponseLong;
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private ItemService itemService;
-
-    @MockBean
-    private BookingService bookingService;
-
-    ItemDto itemDto;
 
     @Test
     public void addItem() throws Exception {
@@ -46,18 +40,11 @@ public class ItemControllerTest {
                 "    \"description\": \"Простая дрель\",\n" +
                 "    \"available\": true\n" +
                 "}";
-        itemDto = ItemDto.builder()
-                .id(1L)
-                .description("Простая дрель")
-                .name("Дрель")
-                .request(ItemRequest.builder()
-                        .id(1L).description("description")
-                        .build())
-                .owner(UserDto.builder().id(1).name("User").build())
-                .available(true)
-                .build();
-        when(itemService.addItem(anyLong(), any()))
-                .thenReturn(item);
+
+        itemDtoResponse = new ItemDtoResponse(1, "Дрель", "Простая дрель", true, 1);
+
+        when(itemService.create(anyLong(), any()))
+                .thenReturn(itemDtoResponse);
 
         this.mockMvc
                 .perform(post("/items")
@@ -70,22 +57,15 @@ public class ItemControllerTest {
     @Test
     public void updateItem() throws Exception {
         String json = "{\n" +
-                "    \"name\": \"Дрель+\",\n" +
-                "    \"description\": \"Аккумуляторная дрель\",\n" +
+                "    \"name\": \"ДрельUpdate\",\n" +
+                "    \"description\": \"Аккумуляторная дрель update\",\n" +
                 "    \"available\": false\n" +
                 "}";
-        item = Item.builder()
-                .id(1L)
-                .description("Аккумуляторная дрель")
-                .name("Дрель+")
-                .request(ItemRequest.builder()
-                        .id(1L).description("description")
-                        .build())
-                .owner(User.builder().id(1).name("User").build())
-                .available(false)
-                .build();
-        when(itemService.updateItem(anyLong(), anyLong(), any()))
-                .thenReturn(item);
+
+        itemDtoResponse = new ItemDtoResponse(1, "ДрельUpdate", "Простая дрель update", false, 1);
+
+        when(itemService.update(anyLong(), anyLong(), any()))
+                .thenReturn(itemDtoResponse);
 
         this.mockMvc
                 .perform(patch("/items/1")
@@ -93,47 +73,33 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("Дрель+")));
+                .andExpect(jsonPath("$.name", is("ДрельUpdate")));
     }
 
     @Test
     public void getItemById() throws Exception {
-        item = Item.builder()
-                .id(1L)
-                .description("Аккумуляторная дрель")
-                .name("Дрель+")
-                .request(ItemRequest.builder()
-                        .id(1L).description("description")
-                        .build())
-                .owner(User.builder().id(1).name("User").build())
-                .available(false)
-                .build();
-        when(itemService.getItemById(anyLong()))
-                .thenReturn(item);
+        //itemDtoResponse = new ItemDtoResponse(1, "ДрельUpdate", "Простая дрель update", false, 1);
+        itemDtoResponseLong = new ItemDtoResponseLong(1, "ДрельUpdate", "Простая дрель update", false,
+                null, null, List.of(), 1);
+
+        when(itemService.get(anyLong(), anyLong()))
+                .thenReturn(itemDtoResponseLong);
 
         this.mockMvc
                 .perform(get("/items/1")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("Дрель+")));
+                .andExpect(jsonPath("$.name", is("ДрельUpdate")));
     }
 
     @Test
     public void getAllItem() throws Exception {
-        Collection<Item> items = new ArrayList<>();
-        item = Item.builder()
-                .id(1L)
-                .description("Аккумуляторная дрель")
-                .name("Дрель+")
-                .request(ItemRequest.builder()
-                        .id(1L).description("description")
-                        .build())
-                .owner(User.builder().id(1).name("User").build())
-                .available(false)
-                .build();
-        items.add(item);
-        when(itemService.getAllItem())
+        Collection<ItemDtoResponseLong> items = new ArrayList<>();
+        itemDtoResponseLong = new ItemDtoResponseLong(1, "ДрельUpdate", "Простая дрель update", false,
+                null, null, List.of(), 1);
+        items.add(itemDtoResponseLong);
+        when(itemService.getAllItemByUserId(anyLong(), anyInt(), anyInt()))
                 .thenReturn(items);
 
         this.mockMvc
@@ -154,15 +120,11 @@ public class ItemControllerTest {
     public void addComment() throws Exception {
         String json = "{\"text\": \"Add comment from user1\"}";
 
-        Comment comment = Comment.builder().id(1L)
-                .item(Item.builder().id(1L).name("item").build())
-                .text("Add comment from user1")
-                .author(User.builder().id(1).name("User").build())
-                .created(LocalDate.now())
-                .build();
+        CommentDtoResponse commentDtoResponse = new CommentDtoResponse(1, "Add comment from user1",
+                "User", LocalDateTime.now());
 
-        when(itemService.addComment(anyLong(), anyLong(), any()))
-                .thenReturn(comment);
+        when(itemService.create(anyLong(), anyLong(), any()))
+                .thenReturn(commentDtoResponse);
 
         this.mockMvc
                 .perform(post("/items/1/comment")

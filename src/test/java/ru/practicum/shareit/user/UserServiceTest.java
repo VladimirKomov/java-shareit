@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
 @SpringBootTest
@@ -26,16 +25,18 @@ public class UserServiceTest {
 
     @Test
     void addUser() {
-        UserDto userDto = new UserDto(1, "name", "user@user.com");
-        service.create(userDto);
-        verify(repository, times(1)).save(MAP_USER.toUser(userDto));
+        User user = new User(1, "name", "user@user.com");
+        UserDto response = MAP_USER.toUserDto(user);
+        service.create(response);
+        verify(repository, times(1)).save(MAP_USER.toUser(response));
     }
 
     @Test
     void updateUser() {
-        UserDto userDto = new UserDto(1, "newName", "newUser@user.com");
-        service.create(userDto);
-        verify(repository, times(1)).save(MAP_USER.toUser(userDto));
+        User user = new User(1, "newName", "newUser@user.com");
+        UserDto response = MAP_USER.toUserDto(user);
+        service.create(response);
+        verify(repository, times(1)).save(MAP_USER.toUser(response));
     }
 
     @Test
@@ -46,9 +47,10 @@ public class UserServiceTest {
 
     @Test
     void getUserById() {
-        UserDto userDto = new UserDto(1, "newName", "newUser@user.com");
-        service.create(userDto);
-        when(repository.findById(1L)).thenReturn(Optional.of(MAP_USER.toUser(userDto)));
+        User user = new User(1, "newName", "newUser@user.com");
+        UserDto response = MAP_USER.toUserDto(user);
+        service.create(response);
+        when(repository.findById(1L)).thenReturn(Optional.of(MAP_USER.toUser(response)));
         service.get(1);
         verify(repository, times(1)).findById(1L);
     }

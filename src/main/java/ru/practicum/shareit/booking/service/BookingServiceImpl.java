@@ -62,7 +62,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public Collection<BookingDtoResponse> getBookingsByBooker(long userId, String state, int from, int size) {
-        userService.get(userId);
+        userService.getEntity(userId);
         return MAP_BOOKING.toCollectionBookingDtoResponse(findBookingsByBooker(userId, state, PageRequest.of(from / size, size)));
 
     }

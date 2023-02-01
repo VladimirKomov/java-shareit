@@ -1,8 +1,8 @@
-DROP TABLE bookings CASCADE;
-DROP TABLE items CASCADE;
-DROP TABLE requests CASCADE;
-DROP TABLE users CASCADE;
-DROP TABLE comments cascade;
+-- DROP TABLE bookings CASCADE;
+-- DROP TABLE items CASCADE;
+-- DROP TABLE requests CASCADE;
+-- DROP TABLE users CASCADE;
+-- DROP TABLE comments cascade;
 
 CREATE TABLE IF NOT EXISTS users
 (

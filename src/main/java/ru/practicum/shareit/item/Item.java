@@ -7,7 +7,9 @@ import ru.practicum.shareit.user.User;
 import javax.persistence.*;
 
 @Data
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Entity
 @Table(name = "items")
 public class Item {

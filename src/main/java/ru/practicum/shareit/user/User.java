@@ -8,6 +8,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
