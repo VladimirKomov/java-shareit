@@ -23,21 +23,6 @@ public class ErrorHandler {
         return new ErrorResponse(HttpStatus.NOT_FOUND.toString(), e.getMessage());
     }
 
-//    @ExceptionHandler({DataIntegrityViolationException.class, ValidationException.class})
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    public ErrorResponse notValidateException(final RuntimeException e) {
-//        log.info(HttpStatus.CONFLICT + " {}", e.getMessage());
-//        return new ErrorResponse(HttpStatus.CONFLICT.toString(), e.getMessage());
-//    }
-//
-//    @ExceptionHandler({MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class,
-//            BadRequestException.class, StateException.class})
-//    @ResponseStatus(HttpStatus.BAD_REQUEST)
-//    public ErrorResponse badRequestException(final RuntimeException e) {
-//        log.info(HttpStatus.BAD_REQUEST + " {}", e.getMessage());
-//        return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), e.getMessage());
-//    }
-
     @ExceptionHandler({DataIntegrityViolationException.class, ValidationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse notValidateException(final RuntimeException e) {

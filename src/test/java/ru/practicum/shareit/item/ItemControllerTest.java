@@ -78,7 +78,6 @@ public class ItemControllerTest {
 
     @Test
     public void getItemById() throws Exception {
-        //itemDtoResponse = new ItemDtoResponse(1, "ДрельUpdate", "Простая дрель update", false, 1);
         itemDtoResponseLong = new ItemDtoResponseLong(1, "ДрельUpdate", "Простая дрель update", false,
                 null, null, List.of(), 1);
 
@@ -120,8 +119,12 @@ public class ItemControllerTest {
     public void addComment() throws Exception {
         String json = "{\"text\": \"Add comment from user1\"}";
 
-        CommentDtoResponse commentDtoResponse = new CommentDtoResponse(1, "Add comment from user1",
-                "User", LocalDateTime.now());
+        CommentDtoResponse commentDtoResponse = CommentDtoResponse.builder()
+                .id(1)
+                .text("Add comment from user1")
+                .authorName("User")
+                .created(LocalDateTime.now())
+                .build();
 
         when(itemService.create(anyLong(), anyLong(), any()))
                 .thenReturn(commentDtoResponse);

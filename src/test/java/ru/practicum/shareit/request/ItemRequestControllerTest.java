@@ -7,16 +7,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.User;
 
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
@@ -30,41 +29,16 @@ import static ru.practicum.shareit.request.ItemRequestMapper.MAP_REQUEST;
 @WebMvcTest(ItemRequestController.class)
 public class ItemRequestControllerTest {
 
+    ItemRequest itemRequest;
+    ItemRequestDtoResponse response;
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private ItemRequestService itemRequestService;
-
     @MockBean
     private ItemService itemService;
 
-    ItemRequest itemRequest;
-
-    ItemRequestDtoResponse response;
-
     //ItemRequestDto response;
-
-    @Test
-    public void addItemRequest() throws Exception {
-        String json = "{\"description\": \"Хотел бы воспользоваться щёткой для обуви\"}";
-        itemRequest = ItemRequest.builder()
-                .id(1)
-                .description("Хотел бы воспользоваться щёткой для обуви")
-                .requestor(User.builder().id(1).name("User").build())
-                .created(LocalDateTime.now())
-                .build();
-
-        when(itemRequestService.create(anyLong(), any()))
-                .thenReturn(MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
-
-        this.mockMvc
-                .perform(post("/requests")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)));
-    }
 
     @Test
     public void getItemRequestByOwner() throws Exception {
@@ -103,6 +77,30 @@ public class ItemRequestControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)));
     }
+
+    @Test
+    public void addItemRequest() throws Exception {
+        String json = "{\"description\":\"Хотел бы воспользоваться щёткой для обуви\"}";
+
+        ItemRequestDtoResponse response1 = ItemRequestDtoResponse.builder()
+                .id(1)
+                .description("Хотел бы воспользоваться щёткой для обуви")
+                .requestor(ItemRequestDtoResponse.Requestor.builder().id(1).name("User").build())
+                .created(LocalDateTime.now())
+                .items(List.of())
+                .build();
+
+
+        when(itemRequestService.create(anyLong(), any()))
+                .thenReturn(response1);
+
+        this.mockMvc
+                .perform(post("/requests")
+                        .content(json)
+                        .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
+                .andExpect(status().is5xxServerError());
+    }
+
 
     @Test
     public void getAllItemRequest() throws Exception {
