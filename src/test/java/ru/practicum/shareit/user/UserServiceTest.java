@@ -1,6 +1,8 @@
 package ru.practicum.shareit.user;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,6 +18,7 @@ import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
 @SpringBootTest
+@ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
     @Autowired
     private UserService service;
