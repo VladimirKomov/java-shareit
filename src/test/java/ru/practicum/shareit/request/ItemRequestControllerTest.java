@@ -82,7 +82,7 @@ public class ItemRequestControllerTest {
     public void addItemRequest() throws Exception {
         String json = "{\"description\":\"Хотел бы воспользоваться щёткой для обуви\"}";
 
-        ItemRequestDtoResponse response1 = ItemRequestDtoResponse.builder()
+        ItemRequestDtoResponse response = ItemRequestDtoResponse.builder()
                 .id(1)
                 .description("Хотел бы воспользоваться щёткой для обуви")
                 .requestor(ItemRequestDtoResponse.Requestor.builder().id(1).name("User").build())
@@ -90,17 +90,16 @@ public class ItemRequestControllerTest {
                 .items(List.of())
                 .build();
 
-
         when(itemRequestService.create(anyLong(), any()))
-                .thenReturn(response1);
+                .thenReturn(response);
 
         this.mockMvc
                 .perform(post("/requests")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(1)));
     }
-
 
     @Test
     public void getAllItemRequest() throws Exception {

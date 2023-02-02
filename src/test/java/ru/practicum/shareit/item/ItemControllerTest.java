@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.booking.dto.BookingDtoRepository;
 import ru.practicum.shareit.item.dto.CommentDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
@@ -96,13 +97,29 @@ public class ItemControllerTest {
     public void getAllItem() throws Exception {
         Collection<ItemDtoResponseLong> items = new ArrayList<>();
         itemDtoResponseLong = new ItemDtoResponseLong(1, "ДрельUpdate", "Простая дрель update", false,
-                null, null, List.of(), 1);
+                BookingDtoRepository.builder().build(), null, List.of(), 1);
         items.add(itemDtoResponseLong);
         when(itemService.getAllItemByUserId(anyLong(), anyInt(), anyInt()))
                 .thenReturn(items);
 
         this.mockMvc
                 .perform(get("/items")
+                        .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void searchBySubstring() throws Exception {
+        Collection<ItemDtoResponse> items = new ArrayList<>();
+        itemDtoResponse = new ItemDtoResponse(
+                1, "ДрельUpdate", "Аккумуляторная дрель update", false, 1);
+        items.add(itemDtoResponse);
+        when(itemService.getBySubstring(any(), anyInt(), anyInt()))
+                .thenReturn(items);
+
+        this.mockMvc
+                .perform(get("/items/search")
+                        .param("text", "aККум")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk());
     }
@@ -135,4 +152,6 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk());
     }
+
+
 }

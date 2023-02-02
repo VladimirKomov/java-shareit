@@ -38,9 +38,9 @@ public class ItemServiceRequestTest {
     @Test
     void addItemRequest() {
         User user = User.builder().id(1).name("name").email("user@user.com").build();
-        ItemRequestDto response = ItemRequestDto.builder()
-                .description("description")
-                .build();
+        ItemRequestDto response = new ItemRequestDto();
+        response.setDescription("description");
+
         when(userService.getEntity(1)).thenReturn(user);
         service.create(1, response);
         verify(itemRequestRepository, times(1)).save(any());
@@ -62,9 +62,8 @@ public class ItemServiceRequestTest {
                 .requestor(user)
                 .created(LocalDateTime.now())
                 .build();
-        ItemRequestDto response = ItemRequestDto.builder()
-                .description("description")
-                .build();
+        ItemRequestDto response = new ItemRequestDto();
+        response.setDescription("description");
         service.create(1, response);
         when(userService.getEntity(1)).thenReturn(user);
         when(itemRequestRepository.findById(1L)).thenReturn(Optional.ofNullable(itemRequest));

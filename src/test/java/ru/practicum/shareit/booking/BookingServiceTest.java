@@ -8,6 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingService;
+import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
@@ -17,6 +19,7 @@ import ru.practicum.shareit.user.service.UserService;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.booking.BookingMapper.MAP_BOOKING;
 
@@ -76,7 +79,6 @@ public class BookingServiceTest {
                 .item(item)
                 .build();
         when(repository.findById(1L)).thenReturn(Optional.ofNullable(booking));
-        //when(itemService.isUserEqualsOwnerItem(anyLong(), anyLong())).thenReturn(true);
         service.approve(2, 1, true);
         verify(repository, times(1)).save(booking);
     }
@@ -96,12 +98,35 @@ public class BookingServiceTest {
     }
 
     @Test
+    void addBookingNot() {
+        request = BookingDtoRequest.builder()
+                .itemId(1)
+                .start(LocalDateTime.now().plusMinutes(2))
+                .end(LocalDateTime.now().plusDays(1))
+                .build();
+        when(itemService.getEntity(1)).thenReturn(item);
+        when(userService.getEntity(3)).thenThrow(NotFoundException.class);
+        verify(repository, times(0)).save(booking);
+        assertThrows(NotFoundException.class, () -> service.create(3, request));
+    }
+
+    @Test
     void getUserBookings_ALL() {
         when(userService.getEntity(1L)).thenReturn(user);
 
         service.getBookingsByBooker(1, "ALL", 0, 1);
-        verify(repository, times(1)).
-                findAllByBookerIdOrderByStartDesc(anyLong(), any());
+        verify(repository, times(1))
+                .findAllByBookerIdOrderByStartDesc(anyLong(), any());
+    }
+
+    @Test
+    void getUserBookings_ALLLLL() {
+        when(userService.getEntity(1L)).thenReturn(user);
+
+        assertThrows(BadRequestException.class, () ->
+                service.getBookingsByBooker(1, "ALLLLL", 0, 1));
+        verify(repository, times(0))
+                .findAllByBookerIdOrderByStartDesc(anyLong(), any());
     }
 
     @Test
@@ -109,8 +134,8 @@ public class BookingServiceTest {
         when(userService.getEntity(1L)).thenReturn(user);
 
         service.getBookingsByBooker(1, "CURRENT", 0, 1);
-        verify(repository, times(1)).
-                findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class), any(LocalDateTime.class), any());
+        verify(repository, times(1))
+                .findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class), any(LocalDateTime.class), any());
     }
 
     @Test
@@ -118,8 +143,8 @@ public class BookingServiceTest {
         when(userService.getEntity(1L)).thenReturn(user);
 
         service.getBookingsByBooker(1, "PAST", 0, 1);
-        verify(repository, times(1)).
-                findAllByBookerIdAndEndBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class), any());
+        verify(repository, times(1))
+                .findAllByBookerIdAndEndBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class), any());
     }
 
     @Test
@@ -127,8 +152,8 @@ public class BookingServiceTest {
         when(userService.getEntity(1L)).thenReturn(user);
 
         service.getBookingsByBooker(1, "FUTURE", 0, 1);
-        verify(repository, times(1)).
-                findAllByBookerIdAndStartAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class), any());
+        verify(repository, times(1))
+                .findAllByBookerIdAndStartAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class), any());
     }
 
     @Test
@@ -155,6 +180,16 @@ public class BookingServiceTest {
 
         service.getItemBookingsByOwner(1, "ALL", 0, 1);
         verify(repository, times(1))
+                .findAllByItemOwnerIdOrderByStartDesc(anyLong(), any());
+    }
+
+    @Test
+    void getItemBookingsByOwner_ALLLLL() {
+        when(userService.getEntity(1L)).thenReturn(user);
+
+        assertThrows(BadRequestException.class, () ->
+                service.getItemBookingsByOwner(1, "ALLLLL", 0, 1));
+        verify(repository, times(0))
                 .findAllByItemOwnerIdOrderByStartDesc(anyLong(), any());
     }
 
