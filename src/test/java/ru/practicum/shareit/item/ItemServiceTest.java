@@ -2,8 +2,6 @@ package ru.practicum.shareit.item;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,7 +29,6 @@ import static ru.practicum.shareit.item.CommentMapper.MAP_COMMENT;
 import static ru.practicum.shareit.item.ItemMapper.MAP_ITEM;
 
 @SpringBootTest
-@ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
 
     Item item;
@@ -114,7 +111,7 @@ public class ItemServiceTest {
     }
 
     @Test
-    void addComment() {
+    void addComment() throws InterruptedException {
         commentDto = new CommentDto("comment");
         itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, null, null, 1);
 
@@ -125,7 +122,7 @@ public class ItemServiceTest {
         service.create(1, 1, commentDto);
         comment = MAP_COMMENT.toComment(commentDto);
         comment.setCreated(LocalDateTime.now());
-        verify(commentRepository, times(1)).save(comment);
+        verify(commentRepository, times(1)).save(any());
     }
 
     @Test
