@@ -34,14 +34,4 @@ public class ItemRequestRepositoryTest {
         then(result).containsExactlyElementsOf(List.of(itemRequest));
     }
 
-//    @Test
-//    void findItemRequestsByRequestor_IdIsNotOrderByCreatedDesc() {
-//        User requestor = User.builder().name("newName").email("newUser@user.com").build();
-//        ItemRequest itemRequest = ItemRequest.builder().description("descr").created(LocalDateTime.now()).requestor(requestor).build();
-//        entityManager.persist(requestor);
-//        entityManager.persist(itemRequest);
-//        Collection<ItemRequest> result = repository.findAllByRequestorIdIsNotOrderByCreatedDesc(2, PageRequest.of(0, 1));
-//        then(result).size().isEqualTo(1);
-//        then(result).containsExactlyElementsOf(List.of(itemRequest));
-//    }
 }

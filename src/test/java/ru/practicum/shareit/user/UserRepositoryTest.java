@@ -14,18 +14,21 @@ import static org.assertj.core.api.BDDAssertions.then;
 public class UserRepositoryTest {
 
     @Autowired
-    private TestEntityManager em;
+    private TestEntityManager entityManager;
 
     @Autowired
     private UserRepository repository;
 
-//    @Test
-//    void findByEmailContainingIgnoreCase() {
-//        User user = new User(1, "newName", "newUser@user.com");
-//        em.persist(user);
-//        List<User> result = repository.findByEmailContainingIgnoreCase("newUser@user.com");
-//        then(result).size().isEqualTo(1);
-//        then(result).containsExactlyElementsOf(List.of(user));
-//    }
+    @Test
+    void find() {
+        User user = User.builder()
+                .name("newName")
+                .email("newUser@user.com")
+                .build();
+        entityManager.persist(user);
+        List<User> result = repository.findAll();
+        then(result).size().isEqualTo(1);
+        then(result).containsExactlyElementsOf(List.of(user));
+    }
 
 }

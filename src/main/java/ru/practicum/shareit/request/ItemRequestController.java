@@ -2,13 +2,13 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
-import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.Collection;
 
@@ -27,7 +27,7 @@ public class ItemRequestController {
      */
     @PostMapping
     public ItemRequestDtoResponse addItemRequest(@Validated @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-                                                 @Valid @RequestBody ItemRequestDto itemRequestDto) {
+                                                 @RequestBody @NotNull ItemRequestDto itemRequestDto) {
         log.info("Create {}", itemRequestDto.toString());
         return itemRequestService.create(userId, itemRequestDto);
     }

@@ -9,7 +9,6 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.User;
 
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -36,7 +35,7 @@ public class ItemRepositoryTest {
                 .build();
         entityManager.persist(user);
         entityManager.persist(item);
-        Collection<Item> result = repository.findItemsByOwnerIdOrderById(user.getId(), PageRequest.of(0,1));
+        Collection<Item> result = repository.findItemsByOwnerIdOrderById(user.getId(), PageRequest.of(0, 1));
         then(result).size().isEqualTo(1);
         then(result).containsExactlyElementsOf(List.of(item));
     }
@@ -73,7 +72,7 @@ public class ItemRepositoryTest {
                 .build();
         entityManager.persist(owner);
         entityManager.persist(item);
-        Collection<Item> result = repository.searchAvailableByNameAndDescription("АккУМ", PageRequest.of(0,1));
+        Collection<Item> result = repository.searchAvailableByNameAndDescription("АккУМ", PageRequest.of(0, 1));
         then(result).size().isEqualTo(1);
         then(result).containsExactlyElementsOf(List.of(item));
     }

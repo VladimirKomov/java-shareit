@@ -35,7 +35,8 @@ public class UserServiceTest {
     void updateUser() {
         User user = new User(1, "newName", "newUser@user.com");
         UserDto response = MAP_USER.toUserDto(user);
-        service.create(response);
+        when(repository.findById(1L)).thenReturn(Optional.of(MAP_USER.toUser(response)));
+        service.update(1, response);
         verify(repository, times(1)).save(MAP_USER.toUser(response));
     }
 
@@ -54,6 +55,17 @@ public class UserServiceTest {
         service.get(1);
         verify(repository, times(1)).findById(1L);
     }
+
+    @Test
+    void getEntityById() {
+        User user = new User(1, "newName", "newUser@user.com");
+        UserDto response = MAP_USER.toUserDto(user);
+        service.create(response);
+        when(repository.findById(1L)).thenReturn(Optional.of(MAP_USER.toUser(response)));
+        service.getEntity(1);
+        verify(repository, times(1)).findById(1L);
+    }
+
 
     @Test
     void getAllUsers() {

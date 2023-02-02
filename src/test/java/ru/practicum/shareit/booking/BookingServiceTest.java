@@ -22,23 +22,19 @@ import static ru.practicum.shareit.booking.BookingMapper.MAP_BOOKING;
 
 @SpringBootTest
 public class BookingServiceTest {
-    @Autowired
-    private BookingService service;
-
-    @MockBean
-    private UserService userService;
-
-    @MockBean
-    private BookingRepository repository;
-
-    @MockBean
-    private ItemService itemService;
-
     Booking booking;
     BookingDtoRequest request;
     Item item;
     User user;
     User owner;
+    @Autowired
+    private BookingService service;
+    @MockBean
+    private UserService userService;
+    @MockBean
+    private BookingRepository repository;
+    @MockBean
+    private ItemService itemService;
     @Autowired
     private ItemRepository itemRepository;
 
@@ -139,7 +135,7 @@ public class BookingServiceTest {
     void getUserBookings_Waiting() {
         when(userService.getEntity(1L)).thenReturn(user);
 
-        service.getBookingsByBooker(1, "WAITING", 0,1);
+        service.getBookingsByBooker(1, "WAITING", 0, 1);
         verify(repository, times(1))
                 .findAllByBookerIdAndStatusOrderByStartDesc(anyLong(), any(), any());
     }
@@ -148,7 +144,7 @@ public class BookingServiceTest {
     void getUserBookings_REJECTED() {
         when(userService.getEntity(1L)).thenReturn(user);
 
-        service.getBookingsByBooker(1, "REJECTED", 0,1);
+        service.getBookingsByBooker(1, "REJECTED", 0, 1);
         verify(repository, times(1))
                 .findAllByBookerIdAndStatusOrderByStartDesc(anyLong(), any(), any());
     }
@@ -157,7 +153,7 @@ public class BookingServiceTest {
     void getItemBookingsByOwner_ALL() {
         when(userService.getEntity(1L)).thenReturn(user);
 
-        service.getItemBookingsByOwner(1, "ALL", 0,1);
+        service.getItemBookingsByOwner(1, "ALL", 0, 1);
         verify(repository, times(1))
                 .findAllByItemOwnerIdOrderByStartDesc(anyLong(), any());
     }
@@ -166,7 +162,7 @@ public class BookingServiceTest {
     void getItemBookingsByOwner_CURRENT() {
         when(userService.getEntity(1L)).thenReturn(user);
 
-        service.getItemBookingsByOwner(1, "CURRENT", 0,1);
+        service.getItemBookingsByOwner(1, "CURRENT", 0, 1);
         verify(repository, times(1))
                 .findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class),
                         any(LocalDateTime.class), any());
@@ -176,7 +172,7 @@ public class BookingServiceTest {
     void getItemBookingsByOwner_PAST() {
         when(userService.getEntity(1L)).thenReturn(user);
 
-        service.getItemBookingsByOwner(1, "PAST", 0,1);
+        service.getItemBookingsByOwner(1, "PAST", 0, 1);
         verify(repository, times(1))
                 .findAllByItemOwnerIdAndEndIsBeforeOrderByStartDesc(anyLong(), any(LocalDateTime.class), any());
     }
@@ -185,7 +181,7 @@ public class BookingServiceTest {
     void getItemBookingsByOwner_FUTURE() {
         when(userService.getEntity(1L)).thenReturn(user);
 
-        service.getItemBookingsByOwner(1, "FUTURE", 0,1);
+        service.getItemBookingsByOwner(1, "FUTURE", 0, 1);
         verify(repository, times(1))
                 .findAllByItemOwnerIdAndStartIsAfterOrderByStartDesc(anyLong(), any(LocalDateTime.class), any());
     }
@@ -194,7 +190,7 @@ public class BookingServiceTest {
     void getItemBookingsByOwner_WAITING() {
         when(userService.getEntity(1L)).thenReturn(user);
 
-        service.getItemBookingsByOwner(1, "WAITING", 0,1);
+        service.getItemBookingsByOwner(1, "WAITING", 0, 1);
         verify(repository, times(1))
                 .findAllByItemOwnerIdAndStatusOrderByStartDesc(anyLong(), any(), any());
     }
@@ -203,12 +199,10 @@ public class BookingServiceTest {
     void getItemBookingsByOwner_REJECTED() {
         when(userService.getEntity(1L)).thenReturn(user);
 
-        service.getItemBookingsByOwner(1, "REJECTED", 0,1);
+        service.getItemBookingsByOwner(1, "REJECTED", 0, 1);
         verify(repository, times(1))
                 .findAllByItemOwnerIdAndStatusOrderByStartDesc(anyLong(), any(), any());
     }
-
-
 
 
 }
