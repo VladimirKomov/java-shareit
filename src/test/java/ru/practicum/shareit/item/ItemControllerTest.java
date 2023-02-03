@@ -6,11 +6,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.booking.dto.BookingDtoRepository;
+import ru.practicum.shareit.booking.Booking;
+import ru.practicum.shareit.booking.StatusBooking;
 import ru.practicum.shareit.item.dto.CommentDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static ru.practicum.shareit.booking.BookingMapper.MAP_BOOKING;
+import static ru.practicum.shareit.item.CommentMapper.MAP_COMMENT;
 
 @WebMvcTest(ItemController.class)
 public class ItemControllerTest {
@@ -96,8 +100,18 @@ public class ItemControllerTest {
     @Test
     public void getAllItem() throws Exception {
         Collection<ItemDtoResponseLong> items = new ArrayList<>();
+
+        Booking booking = Booking.builder().id(1)
+                .start(LocalDateTime.now().plusMinutes(2))
+                .end(LocalDateTime.now().plusDays(1)).status(StatusBooking.WAITING)
+                .item(Item.builder().id(1).available(true).owner(
+                        User.builder().id(2).name("owner").email("owner@owner.com").build())
+                        .build())
+                .booker(User.builder().id(1).name("name").email("user@user.com").build())
+                .build();
+
         itemDtoResponseLong = new ItemDtoResponseLong(1, "ДрельUpdate", "Простая дрель update", false,
-                BookingDtoRepository.builder().build(), null, List.of(), 1);
+                MAP_BOOKING.toBookingDtoRepository(booking), null, List.of(), 1);
         items.add(itemDtoResponseLong);
         when(itemService.getAllItemByUserId(anyLong(), anyInt(), anyInt()))
                 .thenReturn(items);
@@ -136,12 +150,15 @@ public class ItemControllerTest {
     public void addComment() throws Exception {
         String json = "{\"text\": \"Add comment from user1\"}";
 
-        CommentDtoResponse commentDtoResponse = CommentDtoResponse.builder()
+        Comment comment = Comment.builder()
                 .id(1)
                 .text("Add comment from user1")
-                .authorName("User")
+                .item(null)
+                .user(User.builder().id(1).name("User").build())
                 .created(LocalDateTime.now())
                 .build();
+
+        CommentDtoResponse commentDtoResponse = MAP_COMMENT.toDtoResponse(comment);
 
         when(itemService.create(anyLong(), anyLong(), any()))
                 .thenReturn(commentDtoResponse);
@@ -152,6 +169,5 @@ public class ItemControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk());
     }
-
 
 }

@@ -75,7 +75,7 @@ public class ItemServiceRequestTest {
     void getAllItemRequest() {
         User user = User.builder().id(1).name("name").email("user@user.com").build();
         ItemRequest itemRequest = ItemRequest.builder()
-                .description("ddddd")
+                .description("description")
                 .requestor(user)
                 .created(LocalDateTime.now())
                 .build();

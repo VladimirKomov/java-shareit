@@ -13,6 +13,7 @@ import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -24,6 +25,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static ru.practicum.shareit.item.CommentMapper.MAP_COMMENT;
 import static ru.practicum.shareit.item.ItemMapper.MAP_ITEM;
@@ -140,6 +142,21 @@ public class ItemServiceTest {
         when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
         service.delete(1);
         verify(itemRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void itemToItemDto() {
+        itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, null, null, 1);
+        item = MAP_ITEM.toItem(itemDto);
+        item.setRequest(ItemRequest.builder()
+                .description("description")
+                .requestor(user)
+                .created(LocalDateTime.now())
+                .build());
+        itemDto = MAP_ITEM.toItemDto(item);
+        assertEquals(item.getName(), itemDto.getName());
+        assertEquals(item.getDescription(), itemDto.getDescription());
+        assertEquals(item.getRequest().getId(), itemDto.getRequestId());
     }
 
 }
