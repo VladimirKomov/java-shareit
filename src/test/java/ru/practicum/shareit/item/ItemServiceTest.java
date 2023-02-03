@@ -101,6 +101,14 @@ public class ItemServiceTest {
     }
 
     @Test
+    void getEntity() {
+        itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, userDto, null, 1);
+        item = MAP_ITEM.toItem(itemDto);
+        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        service.getEntity(1);
+    }
+
+    @Test
     void getBySubstring() {
         itemDto = new ItemDto(1, "ДрельUpdate", "Аккумуляторная дрель update", true, userDto, null, 1);
         item = MAP_ITEM.toItem(itemDto);

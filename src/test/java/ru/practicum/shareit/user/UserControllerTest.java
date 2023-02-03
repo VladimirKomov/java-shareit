@@ -81,4 +81,12 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void deleteItemById() throws Exception {
+        this.mockMvc
+                .perform(delete("/users/1")
+                        .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
+                .andExpect(status().isOk());
+    }
 }

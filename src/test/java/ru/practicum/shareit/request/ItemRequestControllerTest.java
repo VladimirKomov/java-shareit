@@ -38,8 +38,6 @@ public class ItemRequestControllerTest {
     @MockBean
     private ItemService itemService;
 
-    //ItemRequestDto response;
-
     @Test
     public void getItemRequestByOwner() throws Exception {
         Collection<ItemRequestDtoResponse> itemRequests = new ArrayList<>();
@@ -102,6 +100,36 @@ public class ItemRequestControllerTest {
     }
 
     @Test
+    public void getItemRequest() throws Exception {
+        Collection<ItemRequestDtoResponse> itemRequests = new ArrayList<>();
+
+        itemRequest = ItemRequest.builder()
+                .id(1)
+                .description("Хотел бы воспользоваться щёткой для обуви")
+                .requestor(User.builder().id(1).name("User").build())
+                .created(LocalDateTime.now())
+                .build();
+
+        ItemRequestDtoResponse response = ItemRequestDtoResponse.builder()
+                .id(1)
+                .description("Хотел бы воспользоваться щёткой для обуви")
+                .requestor(ItemRequestDtoResponse.Requestor.builder().id(1).name("User").build())
+                .created(LocalDateTime.now())
+                .items(List.of())
+                .build();
+
+
+        itemRequests.add(MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
+        when(itemRequestService.getAll(anyLong(), anyInt(), anyInt()))
+                .thenReturn(itemRequests);
+
+        this.mockMvc
+                .perform(get("/requests")
+                        .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void getAllItemRequest() throws Exception {
         Collection<ItemRequestDtoResponse> itemRequests = new ArrayList<>();
 
@@ -116,7 +144,7 @@ public class ItemRequestControllerTest {
                 .thenReturn(itemRequests);
 
         this.mockMvc
-                .perform(get("/requests")
+                .perform(get("/requests/all")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
                 .andExpect(status().isOk());
     }
