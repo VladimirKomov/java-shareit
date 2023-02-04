@@ -9,6 +9,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.resources.Common;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.time.LocalDateTime;
@@ -25,6 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(BookingController.class)
 public class BookingControllerTest {
 
+    private static final String FILE_PATH = "src/test/java/ru/practicum/shareit/resources/bookingJson/";
+
     BookingDtoResponse response;
     @Autowired
     private MockMvc mockMvc;
@@ -34,7 +37,7 @@ public class BookingControllerTest {
     @Test
     public void addBooking() throws Exception {
         LocalDateTime localDateTime = LocalDateTime.now();
-        String json = "{\"itemId\": 2,\"start\": \"" + localDateTime + "\",\"end\": \"" + localDateTime.plusDays(1) + "\"}";
+        String json = Common.getFile(FILE_PATH + "addBooking.json");
         response = BookingDtoResponse.builder()
                 .id(1)
                 .start(localDateTime)

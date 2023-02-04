@@ -10,6 +10,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestService;
+import ru.practicum.shareit.resources.Common;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
@@ -28,6 +29,8 @@ import static ru.practicum.shareit.request.ItemRequestMapper.MAP_REQUEST;
 
 @WebMvcTest(ItemRequestController.class)
 public class ItemRequestControllerTest {
+
+    private static final String FILE_PATH = "src/test/java/ru/practicum/shareit/resources/requestJson/";
 
     ItemRequest itemRequest;
     ItemRequestDtoResponse response;
@@ -78,7 +81,7 @@ public class ItemRequestControllerTest {
 
     @Test
     public void addItemRequest() throws Exception {
-        String json = "{\"description\":\"Хотел бы воспользоваться щёткой для обуви\"}";
+        String json = Common.getFile(FILE_PATH + "addItemRequest.json");
 
         ItemRequestDtoResponse response = ItemRequestDtoResponse.builder()
                 .id(1)

@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import ru.practicum.shareit.resources.Common;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -21,6 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(UserController.class)
 public class UserControllerTest {
+
+    private static final String FILE_PATH = "src/test/java/ru/practicum/shareit/resources/userJson/";
     UserDto userDto;
     @Autowired
     private MockMvc mockMvc;
@@ -29,7 +32,7 @@ public class UserControllerTest {
 
     @Test
     public void addUser() throws Exception {
-        String json = "{\"name\":\"user\", \"email\":\"user@user.com\"}";
+        String json = Common.getFile(FILE_PATH + "addUser.json");
         userDto = new UserDto(1, "name", "user@user.com");
         when(userService.create(any()))
                 .thenReturn(userDto);
@@ -45,7 +48,7 @@ public class UserControllerTest {
 
     @Test
     public void updateUser() throws Exception {
-        String json = "{\"name\":\"update\", \"email\":\"update@mail.com\"}";
+        String json = Common.getFile(FILE_PATH + "updateUser.json");
         this.mockMvc
                 .perform(patch("/users/1")
                         .content(json)

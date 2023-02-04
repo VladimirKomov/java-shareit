@@ -12,6 +12,7 @@ import ru.practicum.shareit.item.dto.CommentDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDtoResponse;
 import ru.practicum.shareit.item.dto.ItemDtoResponseLong;
 import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.resources.Common;
 import ru.practicum.shareit.user.User;
 
 import java.time.LocalDateTime;
@@ -31,6 +32,7 @@ import static ru.practicum.shareit.item.CommentMapper.MAP_COMMENT;
 @WebMvcTest(ItemController.class)
 public class ItemControllerTest {
 
+    private static final String FILE_PATH = "src/test/java/ru/practicum/shareit/resources/itemJson/";
     ItemDtoResponse itemDtoResponse;
     ItemDtoResponseLong itemDtoResponseLong;
     @Autowired
@@ -40,11 +42,7 @@ public class ItemControllerTest {
 
     @Test
     public void addItem() throws Exception {
-        String json = "{\n" +
-                "    \"name\": \"Дрель\",\n" +
-                "    \"description\": \"Простая дрель\",\n" +
-                "    \"available\": true\n" +
-                "}";
+        String json = Common.getFile(FILE_PATH + "addItem.json");
 
         itemDtoResponse = new ItemDtoResponse(1, "Дрель", "Простая дрель", true, 1);
 
@@ -61,11 +59,7 @@ public class ItemControllerTest {
 
     @Test
     public void updateItem() throws Exception {
-        String json = "{\n" +
-                "    \"name\": \"ДрельUpdate\",\n" +
-                "    \"description\": \"Аккумуляторная дрель update\",\n" +
-                "    \"available\": false\n" +
-                "}";
+        String json = Common.getFile(FILE_PATH + "updateItem.json");
 
         itemDtoResponse = new ItemDtoResponse(1, "ДрельUpdate", "Простая дрель update", false, 1);
 
@@ -105,7 +99,7 @@ public class ItemControllerTest {
                 .start(LocalDateTime.now().plusMinutes(2))
                 .end(LocalDateTime.now().plusDays(1)).status(StatusBooking.WAITING)
                 .item(Item.builder().id(1).available(true).owner(
-                        User.builder().id(2).name("owner").email("owner@owner.com").build())
+                                User.builder().id(2).name("owner").email("owner@owner.com").build())
                         .build())
                 .booker(User.builder().id(1).name("name").email("user@user.com").build())
                 .build();
@@ -148,7 +142,7 @@ public class ItemControllerTest {
 
     @Test
     public void addComment() throws Exception {
-        String json = "{\"text\": \"Add comment from user1\"}";
+        String json = Common.getFile(FILE_PATH + "addComment.json");
 
         Comment comment = Comment.builder()
                 .id(1)
