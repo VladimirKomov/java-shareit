@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.StatusBooking;
@@ -12,6 +13,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
@@ -22,7 +24,6 @@ import java.util.stream.Collectors;
 import static ru.practicum.shareit.booking.BookingMapper.MAP_BOOKING;
 import static ru.practicum.shareit.item.CommentMapper.MAP_COMMENT;
 import static ru.practicum.shareit.item.ItemMapper.MAP_ITEM;
-import static ru.practicum.shareit.user.UserMapper.MAP_USER;
 
 @Service
 @RequiredArgsConstructor
@@ -33,11 +34,15 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
+    private final ItemRequestRepository itemRequestRepository;
+
 
     public ItemDtoResponse create(long userId, ItemDto data) {
-        data.setOwner(MAP_USER.toUser(userService.get(userId)));
+        data.setOwner(userService.get(userId));
+        Item newItem = MAP_ITEM.toItem(data);
+        newItem.setRequest(itemRequestRepository.findById(data.getRequestId()).orElse(null));
         return MAP_ITEM.toItemDtoResponse(
-                itemRepository.save(MAP_ITEM.toItem(data)));
+                itemRepository.save(newItem));
     }
 
     public ItemDtoResponseLong get(long userId, long itemId) {
@@ -83,6 +88,11 @@ public class ItemServiceImpl implements ItemService {
         return MAP_COMMENT.toDtoResponse(commentRepository.save(comment));
     }
 
+    @Override
+    public Collection<Item> getByRequests(List<Long> listRequestId) {
+        return itemRepository.findAllByRequestIdIn(listRequestId);
+    }
+
     protected void validate(long userId, ItemDto data) {
         if (userId !=
                 itemRepository.findById(data.getId()).orElseThrow(NotFoundException::new).getOwner().getId()) {
@@ -90,17 +100,17 @@ public class ItemServiceImpl implements ItemService {
         }
     }
 
-    public Collection<ItemDtoResponseLong> getAllItemByUserId(long userId) {
+    public Collection<ItemDtoResponseLong> getAllItemByUserId(long userId, int from, int size) {
         return MAP_ITEM.toCollectionItemDtoResponseLong(
-                        itemRepository.findItemsByOwnerIdOrderById(userId)).stream()
+                        itemRepository.findItemsByOwnerIdOrderById(userId, PageRequest.of(from / size, size))).stream()
                 .map(i -> setBookings(i, userId))
                 .collect(Collectors.toList());
     }
 
-    public Collection<ItemDtoResponse> getBySubstring(String substr) {
+    public Collection<ItemDtoResponse> getBySubstring(String substr, int from, int size) {
         return substr.isBlank() ? List.of() :
                 MAP_ITEM.toCollectionItemDtoResponse(
-                        itemRepository.searchAvailableByNameAndDescription(substr));
+                        itemRepository.searchAvailableByNameAndDescription(substr, PageRequest.of(from / size, size)));
 
     }
 

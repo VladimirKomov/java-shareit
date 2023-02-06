@@ -1,0 +1,273 @@
+diff --git a/pom.xml b/pom.xml
+index 2de89a7..2c776ca 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -76,6 +76,18 @@
+ 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+ 		</dependency>
+ 
++		<dependency>
++			<groupId>org.apache.commons</groupId>
++			<artifactId>commons-lang3</artifactId>
++			<version>3.8.1</version>
++		</dependency>
++		<dependency>
++			<groupId>org.junit.jupiter</groupId>
++			<artifactId>junit-jupiter-engine</artifactId>
++			<version>5.8.2</version>
++			<scope>test</scope>
++		</dependency>
++
+ 	</dependencies>
+ 
+ 	<build>
+diff --git a/src/main/java/ru/practicum/shareit/request/ItemRequestController.java b/src/main/java/ru/practicum/shareit/request/ItemRequestController.java
+index 064e2e9..97ac669 100644
+--- a/src/main/java/ru/practicum/shareit/request/ItemRequestController.java
++++ b/src/main/java/ru/practicum/shareit/request/ItemRequestController.java
+@@ -1,12 +1,64 @@
+ package ru.practicum.shareit.request;
+ 
+-import org.springframework.web.bind.annotation.RequestMapping;
+-import org.springframework.web.bind.annotation.RestController;
++import lombok.RequiredArgsConstructor;
++import lombok.extern.slf4j.Slf4j;
++import org.springframework.validation.annotation.Validated;
++import org.springframework.web.bind.annotation.*;
++import ru.practicum.shareit.common.Create;
++import ru.practicum.shareit.request.dto.ItemRequestDto;
++import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
++import ru.practicum.shareit.request.service.ItemRequestService;
+ 
+-/**
+- * TODO Sprint add-item-requests.
+- */
++import javax.validation.constraints.Min;
++import java.util.Collection;
++import java.util.List;
++
++
++@Slf4j
++@Validated
+ @RestController
++@RequiredArgsConstructor
+ @RequestMapping(path = "/requests")
+ public class ItemRequestController {
++
++    private final ItemRequestService itemRequestService;
++
++    /**
++     * Создаёт объект запрос
++     */
++    @PostMapping
++    public ItemRequestDtoResponse addItemRequest(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
++            @RequestBody ItemRequestDto itemRequestDto) {
++        log.info("Create {}", itemRequestDto.toString());
++        return itemRequestService.create(userId, itemRequestDto);
++    }
++
++    /**
++     * Возвращает список всех запросов userId
++     */
++    @GetMapping
++    public Collection<ItemRequestDto> getAllItemRequest(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
++        log.info("ItemRequests getAll");
++        return null;
++    }
++
++    /**
++     * Возвращает запрос по userId и requestId
++     */
++    @GetMapping("/{requestId}")
++    public ItemRequestDto getItemRequestById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
++                                             @Min(0) @PathVariable long requestId) {
++        log.info("ItemRequest get by userId={} and requestId={}", userId, requestId);
++        return null;
++    }
++
++    /**
++     * Возвращает список запросов, созданных другими пользователями
++     */
++    @GetMapping("/all")
++    public List<ItemRequestDto> getAllItemRequests(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
++                                                   @RequestParam(defaultValue = "0") int from,
++                                                   @RequestParam(defaultValue = "10") int size) {
++        return null;
++    }
+ }
+diff --git a/src/main/java/ru/practicum/shareit/request/ItemRequestMapper.java b/src/main/java/ru/practicum/shareit/request/ItemRequestMapper.java
+index a928c83..ff99239 100644
+--- a/src/main/java/ru/practicum/shareit/request/ItemRequestMapper.java
++++ b/src/main/java/ru/practicum/shareit/request/ItemRequestMapper.java
+@@ -1,2 +1,23 @@
+-package ru.practicum.shareit.request;public interface ItemRequestMapper {
++package ru.practicum.shareit.request;
++
++import org.mapstruct.Mapper;
++import org.mapstruct.factory.Mappers;
++import ru.practicum.shareit.request.dto.ItemRequestDto;
++import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
++import ru.practicum.shareit.request.model.ItemRequest;
++
++import java.util.Collection;
++
++@Mapper(componentModel = "spring")
++public interface ItemRequestMapper {
++
++    ItemRequestMapper MAP_REQUEST = Mappers.getMapper(ItemRequestMapper.class);
++
++    ItemRequest toItemRequest (ItemRequestDto itemRequestDto);
++
++    ItemRequestDto toItemRequestDto(ItemRequest itemRequest);
++
++    ItemRequestDtoResponse toItemRequestDtoResponse(ItemRequest itemRequest);
++
++    Collection<ItemRequestDto> toCollectionItemRequestDto(Collection<ItemRequest> itemRequests);
+ }
+diff --git a/src/main/java/ru/practicum/shareit/request/dto/ItemRequestDto.java b/src/main/java/ru/practicum/shareit/request/dto/ItemRequestDto.java
+index 7b3ed54..07d2976 100644
+--- a/src/main/java/ru/practicum/shareit/request/dto/ItemRequestDto.java
++++ b/src/main/java/ru/practicum/shareit/request/dto/ItemRequestDto.java
+@@ -1,7 +1,8 @@
+ package ru.practicum.shareit.request.dto;
+ 
+-/**
+- * TODO Sprint add-item-requests.
+- */
++import lombok.Data;
++
++@Data
+ public class ItemRequestDto {
++    private String description;
+ }
+diff --git a/src/main/java/ru/practicum/shareit/request/dto/ItemRequestDtoResponse.java b/src/main/java/ru/practicum/shareit/request/dto/ItemRequestDtoResponse.java
+index 2a6df52..2dc9d63 100644
+--- a/src/main/java/ru/practicum/shareit/request/dto/ItemRequestDtoResponse.java
++++ b/src/main/java/ru/practicum/shareit/request/dto/ItemRequestDtoResponse.java
+@@ -1,2 +1,14 @@
+-package ru.practicum.shareit.request.dto;public class ItemRequestDtoRequest {
++package ru.practicum.shareit.request.dto;
++
++import lombok.Data;
++import ru.practicum.shareit.user.User;
++
++import java.time.LocalDateTime;
++
++@Data
++public class ItemRequestDtoResponse {
++    private long id;
++    private String description;
++    private User requestor;
++    private LocalDateTime created;
+ }
+diff --git a/src/main/java/ru/practicum/shareit/request/model/ItemRequest.java b/src/main/java/ru/practicum/shareit/request/model/ItemRequest.java
+index 6478413..c51b0d7 100644
+--- a/src/main/java/ru/practicum/shareit/request/model/ItemRequest.java
++++ b/src/main/java/ru/practicum/shareit/request/model/ItemRequest.java
+@@ -12,11 +12,12 @@ import java.time.LocalDateTime;
+  * TODO Sprint add-item-requests.
+  */
+ @Data
+-@NoArgsConstructor(access = AccessLevel.PROTECTED)
++@NoArgsConstructor
+ @Entity
+ @Table(name = "requests")
+ public class ItemRequest {
+     @Id
++    @GeneratedValue(strategy = GenerationType.IDENTITY)
+     private long id;
+     private String description;
+     @ManyToOne
+diff --git a/src/main/java/ru/practicum/shareit/request/repository/ItemRequestRepository.java b/src/main/java/ru/practicum/shareit/request/repository/ItemRequestRepository.java
+index 566cc43..146cb48 100644
+--- a/src/main/java/ru/practicum/shareit/request/repository/ItemRequestRepository.java
++++ b/src/main/java/ru/practicum/shareit/request/repository/ItemRequestRepository.java
+@@ -1,2 +1,8 @@
+-package ru.practicum.shareit.request.repository;public interface ItemRequestRepository {
++package ru.practicum.shareit.request.repository;
++
++import org.springframework.data.jpa.repository.JpaRepository;
++import ru.practicum.shareit.request.model.ItemRequest;
++
++public interface ItemRequestRepository extends JpaRepository<ItemRequest, Long> {
++
+ }
+diff --git a/src/main/java/ru/practicum/shareit/request/service/ItemRequestService.java b/src/main/java/ru/practicum/shareit/request/service/ItemRequestService.java
+index 8dd3075..fb600f2 100644
+--- a/src/main/java/ru/practicum/shareit/request/service/ItemRequestService.java
++++ b/src/main/java/ru/practicum/shareit/request/service/ItemRequestService.java
+@@ -1,2 +1,10 @@
+-package ru.practicum.shareit.request.service;public interface ItemRequestService {
++package ru.practicum.shareit.request.service;
++
++import ru.practicum.shareit.request.dto.ItemRequestDto;
++import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
++
++public interface ItemRequestService {
++
++    ItemRequestDtoResponse create(long userId, ItemRequestDto itemRequestDto);
++
+ }
+diff --git a/src/main/java/ru/practicum/shareit/request/service/ItemRequestServiceImp.java b/src/main/java/ru/practicum/shareit/request/service/ItemRequestServiceImp.java
+index 5163dea..c5d1d0b 100644
+--- a/src/main/java/ru/practicum/shareit/request/service/ItemRequestServiceImp.java
++++ b/src/main/java/ru/practicum/shareit/request/service/ItemRequestServiceImp.java
+@@ -1,2 +1,27 @@
+-package ru.practicum.shareit.request.service;public class ItenRequestServiceImp {
++package ru.practicum.shareit.request.service;
++
++import lombok.RequiredArgsConstructor;
++import org.springframework.stereotype.Service;
++import ru.practicum.shareit.request.dto.ItemRequestDto;
++import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
++import ru.practicum.shareit.request.repository.ItemRequestRepository;
++import ru.practicum.shareit.user.User;
++import ru.practicum.shareit.user.service.UserService;
++
++import static ru.practicum.shareit.request.ItemRequestMapper.MAP_REQUEST;
++import static ru.practicum.shareit.user.UserMapper.MAP_USER;
++
++@RequiredArgsConstructor
++@Service
++public class ItemRequestServiceImp implements ItemRequestService {
++
++    private final ItemRequestRepository itemRequestRepository;
++    private final UserService userService;
++
++    @Override
++    public ItemRequestDtoResponse create(long userId, ItemRequestDto itemRequestDto) {
++        User user = MAP_USER.toUser(userService.get(userId));
++        return MAP_REQUEST.toItemRequestDtoResponse(
++                itemRequestRepository.save(MAP_REQUEST.toItemRequest(itemRequestDto)));
++    }
+ }
+diff --git a/src/main/resources/application.properties b/src/main/resources/application.properties
+index 6271bd4..b1a4ca6 100644
+--- a/src/main/resources/application.properties
++++ b/src/main/resources/application.properties
+@@ -12,16 +12,16 @@ logging.level.org.springframework.transaction=INFO
+ logging.level.org.springframework.transaction.interceptor=TRACE
+ logging.level.org.springframework.orm.jpa.JpaTransactionManager=DEBUG
+ 
+-#logging.level.ru.yandex.practicum.contollers=debug
+-#spring.datasource.url=jdbc:postgresql://localhost:5432/shareit2
+-#spring.datasource.username=test
+-#spring.datasource.password=test
+-#spring.datasource.driver-class-name=org.postgresql.Driver
+-
+-spring.config.activate.on-profile=ci,test
+-spring.datasource.driverClassName=org.h2.Driver
+-spring.datasource.url=jdbc:h2:mem:shareit
++logging.level.ru.yandex.practicum.contollers=debug
++spring.datasource.url=jdbc:postgresql://localhost:5432/shareit2
+ spring.datasource.username=test
+ spring.datasource.password=test
++spring.datasource.driver-class-name=org.postgresql.Driver
++
++#spring.config.activate.on-profile=ci,test
++#spring.datasource.driverClassName=org.h2.Driver
++#spring.datasource.url=jdbc:h2:mem:shareit
++#spring.datasource.username=test
++#spring.datasource.password=test
+ 
+ spring.h2.console.enabled=true

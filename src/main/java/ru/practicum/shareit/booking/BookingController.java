@@ -21,13 +21,20 @@ public class BookingController {
 
     private final BookingService bookingService;
 
+    /**
+     * Создаёт объект бронирования
+     */
     @PostMapping
-    public BookingDtoResponse addBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-                                         @RequestBody BookingDtoRequest bookingDto) {
+    public BookingDtoResponse addBooking(
+            @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+            @RequestBody BookingDtoRequest bookingDto) {
         log.info("Create {} by userId={}", bookingDto.toString(), userId);
         return bookingService.create(userId, bookingDto);
     }
 
+    /**
+     * Обновляет статус бронирования bookingId владельца вещи userId
+     */
     @PatchMapping("/{bookingId}")
     public BookingDtoResponse approveBooking(@RequestHeader("X-Sharer-User-Id") @Min(0) long ownerId,
                                              @Min(0) @PathVariable long bookingId,
@@ -36,6 +43,9 @@ public class BookingController {
         return bookingService.approve(ownerId, bookingId, approved);
     }
 
+    /**
+     * Возвращает информацию о брони по bookingId для определенного userId пользователя или владельца вещи
+     */
     @GetMapping("/{bookingId}")
     public BookingDtoResponse getBookingById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                              @Min(0) @PathVariable long bookingId) {
@@ -43,18 +53,30 @@ public class BookingController {
         return bookingService.getBookingById(userId, bookingId);
     }
 
+    /**
+     * Возвращает список всех бронирований для определенного userId пользователя
+     */
     @GetMapping
-    public Collection<BookingDtoResponse> getUserBookings(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-                                                          @RequestParam(defaultValue = "ALL") String state) {
+    public Collection<BookingDtoResponse> getUserBookings(
+            @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+            @RequestParam(defaultValue = "ALL") String state,
+            @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
+            @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
         log.info("GET all Bookings for userId={}", userId);
-        return bookingService.getBookingsByBooker(userId, state);
+        return bookingService.getBookingsByBooker(userId, state, from, size);
     }
 
+    /**
+     * Возвращает список всех бронирований для определенного userId пользователя - владельца вещи
+     */
     @GetMapping("/owner")
-    public Collection<BookingDtoResponse> getItemBookingsByOwner(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-                                                                 @RequestParam(defaultValue = "ALL") String state) {
+    public Collection<BookingDtoResponse> getItemBookingsByOwner(
+            @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+            @RequestParam(defaultValue = "ALL") String state,
+            @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
+            @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
         log.info("GET all Bookings for ownerId={}", userId);
-        return bookingService.getItemBookingsByOwner(userId, state);
+        return bookingService.getItemBookingsByOwner(userId, state, from, size);
     }
 
 

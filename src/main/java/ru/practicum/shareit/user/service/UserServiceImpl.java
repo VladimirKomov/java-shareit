@@ -33,6 +33,11 @@ public class UserServiceImpl implements UserService {
         repository.deleteById(id);
     }
 
+    @Override
+    public User getEntity(long id) {
+        return repository.findById(id).orElseThrow(NotFoundException::new);
+    }
+
     public Collection<UserDto> getAll() {
         return MAP_USER.toCollectionUserDto(repository.findAll());
     }

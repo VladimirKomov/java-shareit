@@ -4,6 +4,7 @@ import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.dto.*;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface ItemService {
     ItemDtoResponse create(long userId, ItemDto itemDto);
@@ -14,11 +15,13 @@ public interface ItemService {
 
     Item getEntity(long id);
 
-    Collection<ItemDtoResponseLong> getAllItemByUserId(long id);
+    Collection<ItemDtoResponseLong> getAllItemByUserId(long id, int from, int size);
 
-    Collection<ItemDtoResponse> getBySubstring(String substring);
+    Collection<ItemDtoResponse> getBySubstring(String substring, int from, int size);
 
     void delete(long id);
 
     CommentDtoResponse create(long userId, long itemId, CommentDto commentDto);
+
+    Collection<Item> getByRequests(List<Long> listRequestId);
 }

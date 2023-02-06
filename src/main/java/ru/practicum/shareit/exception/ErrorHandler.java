@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 
 @Slf4j
@@ -29,7 +30,8 @@ public class ErrorHandler {
         return new ErrorResponse(HttpStatus.CONFLICT.toString(), e.getMessage());
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class,
+    @ExceptionHandler({MethodArgumentNotValidException.class, ConstraintViolationException.class,
+            MethodArgumentTypeMismatchException.class,
             BadRequestException.class, StateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse badRequestException(final RuntimeException e) {
