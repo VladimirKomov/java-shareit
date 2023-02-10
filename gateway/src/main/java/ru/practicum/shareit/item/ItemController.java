@@ -2,14 +2,16 @@ package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.item.dto.*;
-import ru.practicum.shareit.item.service.ItemService;
+import ru.practicum.shareit.item.dto.CommentDto;
+import ru.practicum.shareit.item.dto.ItemDto;
+
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.util.Collection;
+
 
 @Slf4j
 @Validated
@@ -18,82 +20,85 @@ import java.util.Collection;
 @RequestMapping("/items")
 public class ItemController {
 
-    private final ItemService itemService;
+    private final ItemClient itemClient;
 
     /**
      * Создаёт объект вещи пользователя userId
      */
     @PostMapping
-    public ItemDtoResponse addItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-                                   @Valid @RequestBody ItemDto itemDto) {
+    public ResponseEntity<Object> addItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+                                          @Valid @RequestBody ItemDto itemDto) {
         log.info("Create {} by userId={}", itemDto.toString(), userId);
-        return itemService.create(userId, itemDto);
+        return itemClient.create(userId, itemDto);
     }
 
     /**
      * Создаёт комментарий вещи пользователя userId после бронирования
      */
     @PatchMapping("/{itemId}")
-    public ItemDtoResponse updateItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+    public ResponseEntity<Object> updateItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                       @PathVariable @Min(0) long itemId,
                                       @RequestBody ItemDto itemDto) {
         log.info("Update {}", itemDto.toString());
-        return itemService.update(userId, itemId, itemDto);
+        return itemClient.update(userId, itemId, itemDto);
     }
 
     /**
      * Возвращает вещь по itemId независимо от userId пользователя
      */
     @GetMapping("/{itemId}")
-    public ItemDtoResponseLong getItemById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+    public ResponseEntity<Object> getItemById(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                            @PathVariable @Min(0) long itemId) {
         log.info("GET Item id={}", itemId);
-        return itemService.get(userId, itemId);
+        return itemClient.get(userId, itemId);
     }
 
     /**
      * Возвращает список всех вещей пользователя userId
      */
     @GetMapping
-    public Collection<ItemDtoResponseLong> getAllItem(
+    public ResponseEntity<Object> getAllItem(
             @RequestHeader("X-Sharer-User-Id")
             @Validated @Min(0) long userId,
             @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
             @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
         log.info("Items getAll");
-        return itemService.getAllItemByUserId(userId, from, size);
+        return itemClient.getAllItemByUserId(userId, from, size);
     }
 
     /**
      * Возвращает список по введенному тексту поиска text
      */
     @GetMapping("/search")
-    public Collection<ItemDtoResponse> searchBySubstring(
+    public ResponseEntity<Object> searchBySubstring(
+            @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
             @RequestParam String text,
             @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
             @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
         log.info("Search by text={}", text);
-        return itemService.getBySubstring(text, from, size);
+        return itemClient.getBySubstring(text, userId, from, size);
     }
 
     /**
      * Удаляет объект вещи itemId пользователя userId
      */
     @DeleteMapping("/{itemId}")
-    public void deleteItemById(@PathVariable @Min(0) long itemId) {
+    public void deleteItemById(
+            @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+            @PathVariable @Min(0) long itemId) {
         log.info("Delete by id={}", itemId);
-        itemService.delete(itemId);
+        itemClient.deleteItem(itemId, userId);
     }
 
     /**
      * Создаёт комментарий вещи пользователя userId после бронирования
      */
     @PostMapping("/{itemId}/comment")
-    public CommentDtoResponse addComment(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+    public ResponseEntity<Object> addComment(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                          @PathVariable @Min(0) long itemId,
                                          @Valid @RequestBody CommentDto commentDto) {
         log.info("Create {} by userId={} for itemId={}", commentDto.toString(), userId, itemId);
-        return itemService.create(userId, itemId, commentDto);
+        return itemClient.create(userId, itemId, commentDto);
     }
 
 }
