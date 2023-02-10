@@ -8,13 +8,10 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDtoResponse;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.Collection;
 
 
 @Slf4j
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/requests")
@@ -26,8 +23,8 @@ public class ItemRequestController {
      * Создаёт объект запрос
      */
     @PostMapping
-    public ItemRequestDtoResponse addItemRequest(@Validated @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-                                                 @Valid @RequestBody ItemRequestDto itemRequestDto) {
+    public ItemRequestDtoResponse addItemRequest(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                 @RequestBody ItemRequestDto itemRequestDto) {
         log.info("Create {}", itemRequestDto.toString());
         return itemRequestService.create(userId, itemRequestDto);
     }
@@ -37,7 +34,7 @@ public class ItemRequestController {
      */
     @GetMapping
     public Collection<ItemRequestDtoResponse> getAllItemRequest(
-            @Validated @RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
+            @Validated @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info("ItemRequests getAll by userId={}", userId);
         return itemRequestService.getRequestsByRequestorId(userId);
     }
@@ -47,8 +44,8 @@ public class ItemRequestController {
      */
     @GetMapping("/{requestId}")
     public ItemRequestDtoResponse getItemRequestById(
-            @Validated @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-            @Min(0) @PathVariable long requestId) {
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @PathVariable long requestId) {
         log.info("ItemRequest get by userId={} and requestId={}", userId, requestId);
         return itemRequestService.getRequestsByRequestId(userId, requestId);
     }
@@ -58,9 +55,9 @@ public class ItemRequestController {
      */
     @GetMapping("/all")
     public Collection<ItemRequestDtoResponse> getAllItemRequests(
-            @Validated @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-            @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
-            @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
+            @RequestHeader("X-Sharer-User-Id") long userId,
+            @RequestParam(defaultValue = "0") int from,
+            @RequestParam(defaultValue = "10") int size) {
         return itemRequestService.getAll(userId, from, size);
     }
 }

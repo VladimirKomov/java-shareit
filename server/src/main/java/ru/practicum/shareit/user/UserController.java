@@ -2,21 +2,16 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.common.Create;
-import ru.practicum.shareit.common.Update;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
 
-import javax.validation.constraints.Min;
 import java.util.Collection;
 
 /**
  * TODO Sprint add-controllers.
  */
 @Slf4j
-@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
@@ -28,7 +23,7 @@ public class UserController {
      * Создаёт объект пользователя
      */
     @PostMapping
-    public UserDto addUser(@Validated(Create.class) @RequestBody UserDto userDto) {
+    public UserDto addUser(@RequestBody UserDto userDto) {
         log.info("Create {}", userDto.toString());
         return userService.create(userDto);
     }
@@ -37,8 +32,8 @@ public class UserController {
      * Обновляет данные пользователя
      */
     @PatchMapping("/{userId}")
-    public UserDto updateUser(@PathVariable @Min(0) long userId,
-                              @Validated(Update.class) @RequestBody UserDto userDto) {
+    public UserDto updateUser(@PathVariable long userId,
+                              @RequestBody UserDto userDto) {
         log.info("Update {}", userDto.toString());
         return userService.update(userId, userDto);
     }
@@ -47,7 +42,7 @@ public class UserController {
      * Возвращает объект пользователя по ID
      */
     @GetMapping("/{userId}")
-    public UserDto getUserById(@PathVariable @Min(0) long userId) {
+    public UserDto getUserById(@PathVariable long userId) {
         log.info("GET Item id={}", userId);
         return userService.get(userId);
     }
@@ -65,7 +60,7 @@ public class UserController {
      * Удаляет объект пользователя
      */
     @DeleteMapping("/{userId}")
-    public void deleteUser(@PathVariable @Min(0) long userId) {
+    public void deleteUser(@PathVariable long userId) {
         log.info("Delete by id={}", userId);
         userService.delete(userId);
     }
