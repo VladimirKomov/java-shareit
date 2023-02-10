@@ -12,13 +12,8 @@ import java.util.Collection;
 @AllArgsConstructor
 public class ItemDtoResponseLong {
     private long id;
-    @NotNull
-    @NotBlank
     private String name;
-    @NotNull
-    @NotBlank
     private String description;
-    @NotNull
     private Boolean available;
     private BookingDtoRepository lastBooking;
     private BookingDtoRepository nextBooking;
