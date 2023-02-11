@@ -27,8 +27,8 @@ public class UserRepositoryTest {
                 .build();
         entityManager.persist(user);
         List<User> result = repository.findAll();
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(user));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(user));
     }
 
 }

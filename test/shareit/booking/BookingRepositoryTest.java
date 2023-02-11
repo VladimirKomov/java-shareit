@@ -54,8 +54,8 @@ public class BookingRepositoryTest {
                 .status(StatusBooking.WAITING).build();
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByBookerIdOrderByStartDesc(booker.getId(), pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -72,8 +72,8 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByBookerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
                 booker.getId(), LocalDateTime.now(), LocalDateTime.now(), pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -89,8 +89,8 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByBookerIdAndEndBeforeOrderByStartDesc(
                 booker.getId(), LocalDateTime.now(), pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -106,8 +106,8 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByBookerIdAndStartAfterOrderByStartDesc(
                 booker.getId(), LocalDateTime.now(), pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -123,8 +123,8 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByBookerIdAndStatusOrderByStartDesc(
                 booker.getId(), StatusBooking.WAITING, pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -139,8 +139,8 @@ public class BookingRepositoryTest {
                 .status(StatusBooking.WAITING).build();
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByItemOwnerIdOrderByStartDesc(owner.getId(), pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -156,8 +156,8 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByItemOwnerIdAndStartIsBeforeAndEndIsAfterOrderByStartDesc(
                 owner.getId(), LocalDateTime.now(), LocalDateTime.now(), pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -173,8 +173,8 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByItemOwnerIdAndEndIsBeforeOrderByStartDesc(
                 owner.getId(), LocalDateTime.now(), pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -190,8 +190,8 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByItemOwnerIdAndStartIsAfterOrderByStartDesc(
                 owner.getId(), LocalDateTime.now(), pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -207,8 +207,8 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByItemOwnerIdAndStatusOrderByStartDesc(
                 owner.getId(), StatusBooking.WAITING, pageRequest);
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 
     @Test
@@ -224,7 +224,7 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Booking result = repository.findByItemIdAndItemOwnerIdAndEndIsBeforeOrderByStart(
                 item.getId(), owner.getId(), LocalDateTime.now());
-        then(booking).isEqualTo(result);
+        BDDAssertions.then(booking).isEqualTo(result);
 
     }
 
@@ -241,7 +241,7 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Booking result = repository.findByItemIdAndItemOwnerIdAndStartIsAfterOrderByStart(item.getId(),
                 owner.getId(), LocalDateTime.now());
-        then(booking).isEqualTo(result);
+        BDDAssertions.then(booking).isEqualTo(result);
     }
 
     @Test
@@ -257,7 +257,7 @@ public class BookingRepositoryTest {
         entityManager.persist(booking);
         Collection<Booking> result = repository.findAllByBookerIdAndItemIdAndStatusAndStartBeforeOrderByStartDesc(
                 booker.getId(), item.getId(), StatusBooking.WAITING, LocalDateTime.now());
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(booking));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(booking));
     }
 }

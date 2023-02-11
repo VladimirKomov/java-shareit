@@ -30,8 +30,8 @@ public class ItemRequestRepositoryTest {
         entityManager.persist(requestor);
         entityManager.persist(itemRequest);
         Collection<ItemRequest> result = repository.findAllByRequestorIdOrderByCreatedDesc(requestor.getId());
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(itemRequest));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(itemRequest));
     }
 
 }

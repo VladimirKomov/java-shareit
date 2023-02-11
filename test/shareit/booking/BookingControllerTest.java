@@ -49,15 +49,15 @@ public class BookingControllerTest {
                 .status(StatusBooking.WAITING)
                 .booker(UserDto.builder().id(1).name("User").build())
                 .build();
-        when(bookingService.create(anyLong(), any()))
+        Mockito.when(bookingService.create(ArgumentMatchers.anyLong(), ArgumentMatchers.any()))
                 .thenReturn(response);
 
         this.mockMvc
-                .perform(post("/bookings")
+                .perform(MockMvcRequestBuilders.post("/bookings")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)));
     }
 
     @Test
@@ -74,14 +74,14 @@ public class BookingControllerTest {
                 .status(StatusBooking.WAITING)
                 .booker(UserDto.builder().id(1).name("User").build())
                 .build();
-        when(bookingService.approve(anyLong(), anyLong(), anyBoolean()))
+        Mockito.when(bookingService.approve(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong(), ArgumentMatchers.anyBoolean()))
                 .thenReturn(response);
 
         this.mockMvc
-                .perform(patch("/bookings/1")
+                .perform(MockMvcRequestBuilders.patch("/bookings/1")
                         .param("approved", "true")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -98,13 +98,13 @@ public class BookingControllerTest {
                 .status(StatusBooking.WAITING)
                 .booker(UserDto.builder().id(1).name("User").build())
                 .build();
-        when(bookingService.getBookingById(anyLong(), anyLong()))
+        Mockito.when(bookingService.getBookingById(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong()))
                 .thenReturn(response);
 
         this.mockMvc
-                .perform(get("/bookings/1")
+                .perform(MockMvcRequestBuilders.get("/bookings/1")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -123,13 +123,13 @@ public class BookingControllerTest {
                 .booker(UserDto.builder().id(1).name("User").build())
                 .build();
         responses.add(response);
-        when(bookingService.getBookingsByBooker(anyLong(), anyString(), anyInt(), anyInt()))
+        Mockito.when(bookingService.getBookingsByBooker(ArgumentMatchers.anyLong(), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
                 .thenReturn(responses);
 
         this.mockMvc
-                .perform(get("/bookings")
+                .perform(MockMvcRequestBuilders.get("/bookings")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -148,12 +148,12 @@ public class BookingControllerTest {
                 .booker(UserDto.builder().id(1).name("User").build())
                 .build();
         responses.add(response);
-        when(bookingService.getItemBookingsByOwner(anyLong(), anyString(), anyInt(), anyInt()))
+        Mockito.when(bookingService.getItemBookingsByOwner(ArgumentMatchers.anyLong(), ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
                 .thenReturn(responses);
 
         this.mockMvc
-                .perform(get("/bookings/owner")
+                .perform(MockMvcRequestBuilders.get("/bookings/owner")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

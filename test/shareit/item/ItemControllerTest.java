@@ -46,15 +46,15 @@ public class ItemControllerTest {
 
         itemDtoResponse = new ItemDtoResponse(1, "Дрель", "Простая дрель", true, 1);
 
-        when(itemService.create(anyLong(), any()))
+        Mockito.when(itemService.create(ArgumentMatchers.anyLong(), ArgumentMatchers.any()))
                 .thenReturn(itemDtoResponse);
 
         this.mockMvc
-                .perform(post("/items")
+                .perform(MockMvcRequestBuilders.post("/items")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)));
     }
 
     @Test
@@ -63,16 +63,16 @@ public class ItemControllerTest {
 
         itemDtoResponse = new ItemDtoResponse(1, "ДрельUpdate", "Простая дрель update", false, 1);
 
-        when(itemService.update(anyLong(), anyLong(), any()))
+        Mockito.when(itemService.update(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong(), ArgumentMatchers.any()))
                 .thenReturn(itemDtoResponse);
 
         this.mockMvc
-                .perform(patch("/items/1")
+                .perform(MockMvcRequestBuilders.patch("/items/1")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("ДрельUpdate")));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is("ДрельUpdate")));
     }
 
     @Test
@@ -80,15 +80,15 @@ public class ItemControllerTest {
         itemDtoResponseLong = new ItemDtoResponseLong(1, "ДрельUpdate", "Простая дрель update", false,
                 null, null, List.of(), 1);
 
-        when(itemService.get(anyLong(), anyLong()))
+        Mockito.when(itemService.get(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong()))
                 .thenReturn(itemDtoResponseLong);
 
         this.mockMvc
-                .perform(get("/items/1")
+                .perform(MockMvcRequestBuilders.get("/items/1")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is("ДрельUpdate")));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name", Matchers.is("ДрельUpdate")));
     }
 
     @Test
@@ -105,15 +105,15 @@ public class ItemControllerTest {
                 .build();
 
         itemDtoResponseLong = new ItemDtoResponseLong(1, "ДрельUpdate", "Простая дрель update", false,
-                MAP_BOOKING.toBookingDtoRepository(booking), null, List.of(), 1);
+                BookingMapper.MAP_BOOKING.toBookingDtoRepository(booking), null, List.of(), 1);
         items.add(itemDtoResponseLong);
-        when(itemService.getAllItemByUserId(anyLong(), anyInt(), anyInt()))
+        Mockito.when(itemService.getAllItemByUserId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
                 .thenReturn(items);
 
         this.mockMvc
-                .perform(get("/items")
+                .perform(MockMvcRequestBuilders.get("/items")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -122,22 +122,22 @@ public class ItemControllerTest {
         itemDtoResponse = new ItemDtoResponse(
                 1, "ДрельUpdate", "Аккумуляторная дрель update", false, 1);
         items.add(itemDtoResponse);
-        when(itemService.getBySubstring(any(), anyInt(), anyInt()))
+        Mockito.when(itemService.getBySubstring(ArgumentMatchers.any(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
                 .thenReturn(items);
 
         this.mockMvc
-                .perform(get("/items/search")
+                .perform(MockMvcRequestBuilders.get("/items/search")
                         .param("text", "aККум")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
     public void deleteItemById() throws Exception {
         this.mockMvc
-                .perform(delete("/items/1")
+                .perform(MockMvcRequestBuilders.delete("/items/1")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -152,16 +152,16 @@ public class ItemControllerTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        CommentDtoResponse commentDtoResponse = MAP_COMMENT.toDtoResponse(comment);
+        CommentDtoResponse commentDtoResponse = CommentMapper.MAP_COMMENT.toDtoResponse(comment);
 
-        when(itemService.create(anyLong(), anyLong(), any()))
+        Mockito.when(itemService.create(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong(), ArgumentMatchers.any()))
                 .thenReturn(commentDtoResponse);
 
         this.mockMvc
-                .perform(post("/items/1/comment")
+                .perform(MockMvcRequestBuilders.post("/items/1/comment")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
 }

@@ -41,17 +41,17 @@ public class ItemServiceRequestTest {
         ItemRequestDto response = new ItemRequestDto();
         response.setDescription("description");
 
-        when(userService.getEntity(1)).thenReturn(user);
+        Mockito.when(userService.getEntity(1)).thenReturn(user);
         service.create(1, response);
-        verify(itemRequestRepository, times(1)).save(any());
+        Mockito.verify(itemRequestRepository, Mockito.times(1)).save(ArgumentMatchers.any());
     }
 
     @Test
     void getItemRequestByOwner() {
         User user = User.builder().id(1).name("name").email("user@user.com").build();
-        when(userService.getEntity(1)).thenReturn(user);
+        Mockito.when(userService.getEntity(1)).thenReturn(user);
         service.getRequestsByRequestorId(1);
-        verify(itemRequestRepository, times(1)).findAllByRequestorIdOrderByCreatedDesc(1L);
+        Mockito.verify(itemRequestRepository, Mockito.times(1)).findAllByRequestorIdOrderByCreatedDesc(1L);
     }
 
     @Test
@@ -65,10 +65,10 @@ public class ItemServiceRequestTest {
         ItemRequestDto response = new ItemRequestDto();
         response.setDescription("description");
         service.create(1, response);
-        when(userService.getEntity(1)).thenReturn(user);
-        when(itemRequestRepository.findById(1L)).thenReturn(Optional.ofNullable(itemRequest));
+        Mockito.when(userService.getEntity(1)).thenReturn(user);
+        Mockito.when(itemRequestRepository.findById(1L)).thenReturn(Optional.ofNullable(itemRequest));
         service.getRequestsByRequestId(1, 1);
-        verify(itemRequestRepository, times(1)).findById(1L);
+        Mockito.verify(itemRequestRepository, Mockito.times(1)).findById(1L);
     }
 
     @Test
@@ -80,15 +80,15 @@ public class ItemServiceRequestTest {
                 .created(LocalDateTime.now())
                 .build();
 
-        when(userService.getEntity(user.getId())).thenReturn(user);
-        when(itemRequestRepository.findAllByRequestorIdIsNotOrderByCreatedDesc(user.getId(),
+        Mockito.when(userService.getEntity(user.getId())).thenReturn(user);
+        Mockito.when(itemRequestRepository.findAllByRequestorIdIsNotOrderByCreatedDesc(user.getId(),
                 PageRequest.of(0, 1)))
                 .thenReturn(List.of(itemRequest));
 
         var result = service.getAll(1, 0, 1);
 
-        assertNotNull(result);
-        assertEquals(1, result.size());
-        assertEquals(itemRequest.getDescription(), result.stream().findFirst().get().getDescription());
+        Assertions.assertNotNull(result);
+        Assertions.assertEquals(1, result.size());
+        Assertions.assertEquals(itemRequest.getDescription(), result.stream().findFirst().get().getDescription());
     }
 }

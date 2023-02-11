@@ -50,15 +50,15 @@ public class ItemRequestControllerTest {
                 .requestor(User.builder().id(1).name("User").build())
                 .created(LocalDateTime.now())
                 .build();
-        itemRequests.add(MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
+        itemRequests.add(ItemRequestMapper.MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
 
-        when(itemRequestService.getRequestsByRequestorId(anyLong()))
+        Mockito.when(itemRequestService.getRequestsByRequestorId(ArgumentMatchers.anyLong()))
                 .thenReturn(itemRequests);
 
         this.mockMvc
-                .perform(get("/requests")
+                .perform(MockMvcRequestBuilders.get("/requests")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -69,14 +69,14 @@ public class ItemRequestControllerTest {
                 .requestor(User.builder().id(1).name("User").build())
                 .created(LocalDateTime.now())
                 .build();
-        when(itemRequestService.getRequestsByRequestId(anyLong(), anyLong()))
-                .thenReturn(MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
+        Mockito.when(itemRequestService.getRequestsByRequestId(ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong()))
+                .thenReturn(ItemRequestMapper.MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
 
         this.mockMvc
-                .perform(get("/requests/1")
+                .perform(MockMvcRequestBuilders.get("/requests/1")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)));
     }
 
     @Test
@@ -91,15 +91,15 @@ public class ItemRequestControllerTest {
                 .items(List.of())
                 .build();
 
-        when(itemRequestService.create(anyLong(), any()))
+        Mockito.when(itemRequestService.create(ArgumentMatchers.anyLong(), ArgumentMatchers.any()))
                 .thenReturn(response);
 
         this.mockMvc
-                .perform(post("/requests")
+                .perform(MockMvcRequestBuilders.post("/requests")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(1)));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id", Matchers.is(1)));
     }
 
     @Test
@@ -122,14 +122,14 @@ public class ItemRequestControllerTest {
                 .build();
 
 
-        itemRequests.add(MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
-        when(itemRequestService.getAll(anyLong(), anyInt(), anyInt()))
+        itemRequests.add(ItemRequestMapper.MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
+        Mockito.when(itemRequestService.getAll(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
                 .thenReturn(itemRequests);
 
         this.mockMvc
-                .perform(get("/requests")
+                .perform(MockMvcRequestBuilders.get("/requests")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
@@ -142,13 +142,13 @@ public class ItemRequestControllerTest {
                 .requestor(User.builder().id(1).name("User").build())
                 .created(LocalDateTime.now())
                 .build();
-        itemRequests.add(MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
-        when(itemRequestService.getAll(anyLong(), anyInt(), anyInt()))
+        itemRequests.add(ItemRequestMapper.MAP_REQUEST.toItemRequestDtoResponse(itemRequest));
+        Mockito.when(itemRequestService.getAll(ArgumentMatchers.anyLong(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
                 .thenReturn(itemRequests);
 
         this.mockMvc
-                .perform(get("/requests/all")
+                .perform(MockMvcRequestBuilders.get("/requests/all")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

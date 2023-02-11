@@ -68,28 +68,28 @@ public class ItemServiceTest {
     void addItem() {
         itemDto = new ItemDto(1, "Дрель", "Простая дрель", true, null, null, 1);
         service.create(1, itemDto);
-        item = MAP_ITEM.toItem(itemDto);
-        verify(itemRepository, times(1)).save(item);
+        item = ItemMapper.MAP_ITEM.toItem(itemDto);
+        Mockito.verify(itemRepository, Mockito.times(1)).save(item);
     }
 
     @Test
     void updateItem() {
         itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, userDto, null, 1);
-        item = MAP_ITEM.toItem(itemDto);
+        item = ItemMapper.MAP_ITEM.toItem(itemDto);
         item.setOwner(user);
 
-        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
         service.update(1, 1, itemDto);
-        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
-        verify(itemRepository, times(1)).save(item);
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        Mockito.verify(itemRepository, Mockito.times(1)).save(item);
     }
 
     @Test
     void getAllItemByUserId() {
         itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, userDto, null, 1);
-        item = MAP_ITEM.toItem(itemDto);
+        item = ItemMapper.MAP_ITEM.toItem(itemDto);
         List<Item> items = List.of(item);
-        when(itemRepository.findItemsByOwnerIdOrderById(
+        Mockito.when(itemRepository.findItemsByOwnerIdOrderById(
                 1L, PageRequest.of(0, 1))).thenReturn(items);
         service.getAllItemByUserId(1, 0, 1);
     }
@@ -97,25 +97,25 @@ public class ItemServiceTest {
     @Test
     void getItem() {
         itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, userDto, null, 1);
-        item = MAP_ITEM.toItem(itemDto);
-        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        item = ItemMapper.MAP_ITEM.toItem(itemDto);
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
         service.get(1, 1);
     }
 
     @Test
     void getEntity() {
         itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, userDto, null, 1);
-        item = MAP_ITEM.toItem(itemDto);
-        when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
+        item = ItemMapper.MAP_ITEM.toItem(itemDto);
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.of(item));
         service.getEntity(1);
     }
 
     @Test
     void getBySubstring() {
         itemDto = new ItemDto(1, "ДрельUpdate", "Аккумуляторная дрель update", true, userDto, null, 1);
-        item = MAP_ITEM.toItem(itemDto);
+        item = ItemMapper.MAP_ITEM.toItem(itemDto);
         List<Item> items = List.of(item);
-        when(itemRepository.searchAvailableByNameAndDescription(
+        Mockito.when(itemRepository.searchAvailableByNameAndDescription(
                 "аККум", PageRequest.of(0, 1))).thenReturn(items);
         service.getBySubstring("аККум", 0, 1);
     }
@@ -125,38 +125,38 @@ public class ItemServiceTest {
         commentDto = new CommentDto("comment");
         itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, null, null, 1);
 
-        when(bookingRepository.findAllByBookerIdAndItemIdAndStatusAndStartBeforeOrderByStartDesc(
-                anyLong(), anyLong(), any(), any())).thenReturn(bookings);
-        item = MAP_ITEM.toItem(itemDto);
-        when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
+        Mockito.when(bookingRepository.findAllByBookerIdAndItemIdAndStatusAndStartBeforeOrderByStartDesc(
+                ArgumentMatchers.anyLong(), ArgumentMatchers.anyLong(), ArgumentMatchers.any(), ArgumentMatchers.any())).thenReturn(bookings);
+        item = ItemMapper.MAP_ITEM.toItem(itemDto);
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
         service.create(1, 1, commentDto);
-        comment = MAP_COMMENT.toComment(commentDto);
+        comment = CommentMapper.MAP_COMMENT.toComment(commentDto);
         comment.setCreated(LocalDateTime.now());
-        verify(commentRepository, times(1)).save(any());
+        Mockito.verify(commentRepository, Mockito.times(1)).save(ArgumentMatchers.any());
     }
 
     @Test
     void deleteItem() {
         itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, null, null, 1);
-        item = MAP_ITEM.toItem(itemDto);
-        when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
+        item = ItemMapper.MAP_ITEM.toItem(itemDto);
+        Mockito.when(itemRepository.findById(1L)).thenReturn(Optional.ofNullable(item));
         service.delete(1);
-        verify(itemRepository, times(1)).deleteById(1L);
+        Mockito.verify(itemRepository, Mockito.times(1)).deleteById(1L);
     }
 
     @Test
     void itemToItemDto() {
         itemDto = new ItemDto(1, "ДрельUpdate", "Простая дрель update", true, null, null, 1);
-        item = MAP_ITEM.toItem(itemDto);
+        item = ItemMapper.MAP_ITEM.toItem(itemDto);
         item.setRequest(ItemRequest.builder()
                 .description("description")
                 .requestor(user)
                 .created(LocalDateTime.now())
                 .build());
-        itemDto = MAP_ITEM.toItemDto(item);
-        assertEquals(item.getName(), itemDto.getName());
-        assertEquals(item.getDescription(), itemDto.getDescription());
-        assertEquals(item.getRequest().getId(), itemDto.getRequestId());
+        itemDto = ItemMapper.MAP_ITEM.toItemDto(item);
+        Assertions.assertEquals(item.getName(), itemDto.getName());
+        Assertions.assertEquals(item.getDescription(), itemDto.getDescription());
+        Assertions.assertEquals(item.getRequest().getId(), itemDto.getRequestId());
     }
 
 }

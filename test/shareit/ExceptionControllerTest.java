@@ -17,47 +17,47 @@ public class ExceptionControllerTest {
     @Test
     void testNotFoundException() {
         ErrorResponse responseEntity = controller.notFoundException(new NotFoundException());
-        assertNotNull(responseEntity);
-        assertNotNull(responseEntity.getCode());
+        Assertions.assertNotNull(responseEntity);
+        Assertions.assertNotNull(responseEntity.getCode());
     }
 
     @Test
     void testNotValidateException() {
         ErrorResponse responseEntity = controller.notValidateException(new ValidationException("ValidationException"));
-        assertNotNull(responseEntity);
-        assertNotNull(responseEntity.getCode());
-        assertNotNull(responseEntity.getError());
+        Assertions.assertNotNull(responseEntity);
+        Assertions.assertNotNull(responseEntity.getCode());
+        Assertions.assertNotNull(responseEntity.getError());
     }
 
     @Test
     void testBadRequestException() {
         ErrorResponse responseEntity = controller.badRequestException(new BadRequestException("BadRequestException"));
-        assertNotNull(responseEntity);
-        assertNotNull(responseEntity.getCode());
-        assertNotNull(responseEntity.getError());
+        Assertions.assertNotNull(responseEntity);
+        Assertions.assertNotNull(responseEntity.getCode());
+        Assertions.assertNotNull(responseEntity.getError());
     }
 
     @Test
     void testBadRequestExceptionIsEmpty() {
         ErrorResponse responseEntity = controller.badRequestException(new BadRequestException());
-        assertNotNull(responseEntity);
-        assertNotNull(responseEntity.getCode());
+        Assertions.assertNotNull(responseEntity);
+        Assertions.assertNotNull(responseEntity.getCode());
     }
 
     @Test
     void testBadRequestExceptionStateException() {
         ErrorResponse responseEntity = controller.badRequestException(new StateException("StateException"));
-        assertNotNull(responseEntity);
-        assertNotNull(responseEntity.getCode());
-        assertNotNull(responseEntity.getError());
+        Assertions.assertNotNull(responseEntity);
+        Assertions.assertNotNull(responseEntity.getCode());
+        Assertions.assertNotNull(responseEntity.getError());
     }
 
     @Test
     void testThrowable() {
         ErrorResponse responseEntity = controller.throwable(new Throwable("Throwable"));
-        assertNotNull(responseEntity);
-        assertNotNull(responseEntity.getCode());
-        assertNotNull(responseEntity.getError());
+        Assertions.assertNotNull(responseEntity);
+        Assertions.assertNotNull(responseEntity.getCode());
+        Assertions.assertNotNull(responseEntity.getError());
     }
 
 }

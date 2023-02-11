@@ -36,8 +36,8 @@ public class ItemRepositoryTest {
         entityManager.persist(user);
         entityManager.persist(item);
         Collection<Item> result = repository.findItemsByOwnerIdOrderById(user.getId(), PageRequest.of(0, 1));
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(item));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(item));
     }
 
     @Test
@@ -57,8 +57,8 @@ public class ItemRepositoryTest {
         entityManager.persist(itemRequest);
         entityManager.persist(item);
         Collection<Item> result = repository.findAllByRequestIdIn(List.of(itemRequest.getId()));
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(item));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(item));
     }
 
     @Test
@@ -73,7 +73,7 @@ public class ItemRepositoryTest {
         entityManager.persist(owner);
         entityManager.persist(item);
         Collection<Item> result = repository.searchAvailableByNameAndDescription("АккУМ", PageRequest.of(0, 1));
-        then(result).size().isEqualTo(1);
-        then(result).containsExactlyElementsOf(List.of(item));
+        BDDAssertions.then(result).size().isEqualTo(1);
+        BDDAssertions.then(result).containsExactlyElementsOf(List.of(item));
     }
 }

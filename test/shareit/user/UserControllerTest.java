@@ -34,15 +34,15 @@ public class UserControllerTest {
     public void addUser() throws Exception {
         String json = Common.getFile(FILE_PATH + "addUser.json");
         userDto = new UserDto(1, "name", "user@user.com");
-        when(userService.create(any()))
+        Mockito.when(userService.create(ArgumentMatchers.any()))
                 .thenReturn(userDto);
 
         this.mockMvc
-                .perform(post("/users")
+                .perform(MockMvcRequestBuilders.post("/users")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email", is("user@user.com")));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email", Matchers.is("user@user.com")));
     }
 
 
@@ -50,24 +50,24 @@ public class UserControllerTest {
     public void updateUser() throws Exception {
         String json = Common.getFile(FILE_PATH + "updateUser.json");
         this.mockMvc
-                .perform(patch("/users/1")
+                .perform(MockMvcRequestBuilders.patch("/users/1")
                         .content(json)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
     public void getUserById() throws Exception {
         userDto = new UserDto(1, "update", "update@mail.com");
 
-        when(userService.get(1))
+        Mockito.when(userService.get(1))
                 .thenReturn(userDto);
 
         this.mockMvc
-                .perform(get("/users/1")
+                .perform(MockMvcRequestBuilders.get("/users/1")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.email", is("update@mail.com")));
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.email", Matchers.is("update@mail.com")));
     }
 
     @Test
@@ -76,20 +76,20 @@ public class UserControllerTest {
 
         Collection<UserDto> userDtoCollection = new ArrayList<>();
         userDtoCollection.add(userDto);
-        when(userService.getAll())
+        Mockito.when(userService.getAll())
                 .thenReturn(userDtoCollection);
 
         this.mockMvc
-                .perform(get("/users")
+                .perform(MockMvcRequestBuilders.get("/users")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
     public void deleteItemById() throws Exception {
         this.mockMvc
-                .perform(delete("/users/1")
+                .perform(MockMvcRequestBuilders.delete("/users/1")
                         .contentType(MediaType.APPLICATION_JSON).header("X-Sharer-User-Id", 1))
-                .andExpect(status().isOk());
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 }

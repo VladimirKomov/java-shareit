@@ -27,44 +27,44 @@ public class UserServiceTest {
     @Test
     void addUser() {
         User user = new User(1, "name", "user@user.com");
-        UserDto response = MAP_USER.toUserDto(user);
+        UserDto response = UserMapper.MAP_USER.toUserDto(user);
         service.create(response);
-        verify(repository, times(1)).save(MAP_USER.toUser(response));
+        Mockito.verify(repository, Mockito.times(1)).save(UserMapper.MAP_USER.toUser(response));
     }
 
     @Test
     void updateUser() {
         User user = new User(1, "newName", "newUser@user.com");
-        UserDto response = MAP_USER.toUserDto(user);
-        when(repository.findById(1L)).thenReturn(Optional.of(MAP_USER.toUser(response)));
+        UserDto response = UserMapper.MAP_USER.toUserDto(user);
+        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(UserMapper.MAP_USER.toUser(response)));
         service.update(1, response);
-        verify(repository, times(1)).save(MAP_USER.toUser(response));
+        Mockito.verify(repository, Mockito.times(1)).save(UserMapper.MAP_USER.toUser(response));
     }
 
     @Test
     void deleteUser() {
         service.delete(1);
-        verify(repository, times(1)).deleteById(1L);
+        Mockito.verify(repository, Mockito.times(1)).deleteById(1L);
     }
 
     @Test
     void getUserById() {
         User user = new User(1, "newName", "newUser@user.com");
-        UserDto response = MAP_USER.toUserDto(user);
+        UserDto response = UserMapper.MAP_USER.toUserDto(user);
         service.create(response);
-        when(repository.findById(1L)).thenReturn(Optional.of(MAP_USER.toUser(response)));
+        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(UserMapper.MAP_USER.toUser(response)));
         service.get(1);
-        verify(repository, times(1)).findById(1L);
+        Mockito.verify(repository, Mockito.times(1)).findById(1L);
     }
 
     @Test
     void getEntityById() {
         User user = new User(1, "newName", "newUser@user.com");
-        UserDto response = MAP_USER.toUserDto(user);
+        UserDto response = UserMapper.MAP_USER.toUserDto(user);
         service.create(response);
-        when(repository.findById(1L)).thenReturn(Optional.of(MAP_USER.toUser(response)));
+        Mockito.when(repository.findById(1L)).thenReturn(Optional.of(UserMapper.MAP_USER.toUser(response)));
         service.getEntity(1);
-        verify(repository, times(1)).findById(1L);
+        Mockito.verify(repository, Mockito.times(1)).findById(1L);
     }
 
 
@@ -73,8 +73,8 @@ public class UserServiceTest {
         User user = new User(1, "newName", "newUser@user.com");
         List<User> userList = new ArrayList<>();
         userList.add(user);
-        when(repository.findAll()).thenReturn(userList);
+        Mockito.when(repository.findAll()).thenReturn(userList);
         service.getAll();
-        verify(repository, times(1)).findAll();
+        Mockito.verify(repository, Mockito.times(1)).findAll();
     }
 }
