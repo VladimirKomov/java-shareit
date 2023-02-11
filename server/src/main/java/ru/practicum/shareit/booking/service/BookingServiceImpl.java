@@ -40,8 +40,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDtoResponse approve(long ownerId, long bookingId, boolean approved) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotFoundException::new);
-        if (booking.getItem().getOwner().getId() != ownerId) throw new NotFoundException();
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(
+                () -> new NotFoundException("booking id=" + bookingId));
+        if (booking.getItem().getOwner().getId() != ownerId) throw new NotFoundException("owner id=" + ownerId);
         if (booking.getStatus() == StatusBooking.APPROVED) throw new BadRequestException("Status incorrect");
         if (approved) {
             booking.setStatus(StatusBooking.APPROVED);
@@ -53,9 +54,10 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     public BookingDtoResponse getBookingById(long userId, long bookingId) {
-        Booking booking = bookingRepository.findById(bookingId).orElseThrow(NotFoundException::new);
+        Booking booking = bookingRepository.findById(bookingId).orElseThrow(
+                () -> new NotFoundException("booking id=" + bookingId));
         if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
-            throw new NotFoundException();
+            throw new NotFoundException("user id=" + userId);
         }
         return MAP_BOOKING.toBookingDtoResponse(booking);
     }
@@ -126,7 +128,7 @@ public class BookingServiceImpl implements BookingService {
             throw new BadRequestException("Item incorrect");
         }
         if (booking.getBooker().getId() == booking.getItem().getOwner().getId()) {
-            throw new NotFoundException();
+            throw new NotFoundException("booker id = owner id");
         }
     }
 }

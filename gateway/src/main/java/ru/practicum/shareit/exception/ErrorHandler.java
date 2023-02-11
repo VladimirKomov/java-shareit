@@ -16,13 +16,6 @@ import javax.validation.ValidationException;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse notFoundException(final NotFoundException e) {
-        log.info(HttpStatus.NOT_FOUND + " {}", e.getMessage());
-        return new ErrorResponse(HttpStatus.NOT_FOUND.toString(), e.getMessage());
-    }
-
     @ExceptionHandler({DataIntegrityViolationException.class, ValidationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse notValidateException(final RuntimeException e) {

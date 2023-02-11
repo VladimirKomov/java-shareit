@@ -47,23 +47,23 @@ public class ItemServiceImpl implements ItemService {
 
     public ItemDtoResponseLong get(long userId, long itemId) {
         ItemDtoResponseLong itemDtoResponseLong = MAP_ITEM.toItemDtoRespLong(
-                itemRepository.findById(itemId).orElseThrow(NotFoundException::new));
+                itemRepository.findById(itemId).orElseThrow(() -> new NotFoundException("item id=" + itemId)));
         return setBookings(itemDtoResponseLong, userId);
     }
 
     public Item getEntity(long id) {
-        return itemRepository.findById(id).orElseThrow(NotFoundException::new);
+        return itemRepository.findById(id).orElseThrow(() -> new NotFoundException("item id=" + id));
     }
 
     public ItemDtoResponse update(long userId, long id, ItemDto data) {
         validate(userId,
-                MAP_ITEM.toItemDto(itemRepository.findById(id).orElseThrow(NotFoundException::new)));
+                MAP_ITEM.toItemDto(itemRepository.findById(id).orElseThrow(() -> new NotFoundException("item id=" + id))));
         return MAP_ITEM.toItemDtoResponse(
                 itemRepository.save(updateValues(id, MAP_ITEM.toItem(data))));
     }
 
     protected Item updateValues(long id, Item data) {
-        var target = itemRepository.findById(id).orElseThrow(NotFoundException::new);
+        var target = itemRepository.findById(id).orElseThrow(() -> new NotFoundException("item id=" + id));
         MAP_ITEM.update(data, target);
 
         return target;
@@ -95,8 +95,9 @@ public class ItemServiceImpl implements ItemService {
 
     protected void validate(long userId, ItemDto data) {
         if (userId !=
-                itemRepository.findById(data.getId()).orElseThrow(NotFoundException::new).getOwner().getId()) {
-            throw new NotFoundException();
+                itemRepository.findById(data.getId()).orElseThrow(
+                        () -> new NotFoundException("item id=" + data.getId())).getOwner().getId()) {
+            throw new NotFoundException("user id=" + userId);
         }
     }
 

@@ -58,7 +58,7 @@ public class ItemRequestServiceImp implements ItemRequestService {
         userService.getEntity(userId);
         Collection<ItemRequestDtoResponse> itemRequestsDto = List.of(
                 MAP_REQUEST.toItemRequestDtoResponse(itemRequestRepository.findById(requestId)
-                        .orElseThrow(NotFoundException::new)));
+                        .orElseThrow(() -> new NotFoundException("request id=" + requestId))));
 
         return setItems(itemRequestsDto).stream().findFirst().get();
     }

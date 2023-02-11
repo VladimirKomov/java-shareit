@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserDto get(long id) {
-        return MAP_USER.toUserDto(repository.findById(id).orElseThrow(NotFoundException::new));
+        return MAP_USER.toUserDto(repository.findById(id).orElseThrow(() -> new NotFoundException("user id=" + id)));
     }
 
     public UserDto update(long id, UserDto data) {
@@ -35,7 +35,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getEntity(long id) {
-        return repository.findById(id).orElseThrow(NotFoundException::new);
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("user id=" + id));
     }
 
     public Collection<UserDto> getAll() {
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     protected User updateValues(long id, UserDto data) {
-        var target = repository.findById(id).orElseThrow(NotFoundException::new);
+        var target = repository.findById(id).orElseThrow(() -> new NotFoundException("user id=" + id));
         MAP_USER.update(MAP_USER.toUser(data), target);
 
         return target;
