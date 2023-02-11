@@ -5,11 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.common.Create;
+import ru.practicum.shareit.common.Update;
 import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 
 @Slf4j
@@ -26,7 +29,7 @@ public class ItemController {
      */
     @PostMapping
     public ResponseEntity<Object> addItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-                                          @Valid @RequestBody ItemDto itemDto) {
+                                          @Validated(Create.class) @RequestBody ItemDto itemDto) {
         log.info("Create {} by userId={}", itemDto.toString(), userId);
         return itemClient.create(userId, itemDto);
     }
@@ -37,7 +40,7 @@ public class ItemController {
     @PatchMapping("/{itemId}")
     public ResponseEntity<Object> updateItem(@RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
                                              @PathVariable @Min(0) long itemId,
-                                             @RequestBody ItemDto itemDto) {
+                                             @NotNull @RequestBody ItemDto itemDto) {
         log.info("Update {}", itemDto.toString());
         return itemClient.update(userId, itemId, itemDto);
     }
