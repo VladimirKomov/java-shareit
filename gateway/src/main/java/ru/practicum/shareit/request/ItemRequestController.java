@@ -27,7 +27,7 @@ public class ItemRequestController {
      */
     @PostMapping
     public ResponseEntity<Object> addItemRequest(
-            @Validated @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+            @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
             @Valid @RequestBody ItemRequestDto dto) {
         log.info("Create {}", dto.toString());
         return itemRequestClient.create(userId, dto);
@@ -38,7 +38,7 @@ public class ItemRequestController {
      */
     @GetMapping
     public ResponseEntity<Object> getAllItemRequest(
-            @Validated @RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
+            @RequestHeader("X-Sharer-User-Id") @Min(0) long userId) {
         log.info("ItemRequests getAll by userId={}", userId);
         return itemRequestClient.getItemRequests(userId);
     }
@@ -48,9 +48,9 @@ public class ItemRequestController {
      */
     @GetMapping("all")
     public ResponseEntity<Object> getAllItemRequests(
-            @Validated @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-            @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
-            @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
+            @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
+            @Min(0) @RequestParam(defaultValue = "0") int from,
+            @Min(1) @RequestParam(defaultValue = "10") int size) {
 
         return itemRequestClient.getItemRequestsPage(userId, from, size);
 

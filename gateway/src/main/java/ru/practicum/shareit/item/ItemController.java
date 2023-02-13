@@ -60,8 +60,8 @@ public class ItemController {
     @GetMapping
     public ResponseEntity<Object> getAllItem(
             @RequestHeader("X-Sharer-User-Id") @Validated @Min(0) long userId,
-            @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
-            @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
+             @Min(0) @RequestParam(defaultValue = "0") int from,
+             @Min(1) @RequestParam(defaultValue = "10") int size) {
         log.info("Items getAll");
         return itemClient.getAllItemByUserId(userId, from, size);
     }
@@ -73,8 +73,8 @@ public class ItemController {
     public ResponseEntity<Object> searchBySubstring(
             @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
             @RequestParam String text,
-            @Validated @Min(0) @RequestParam(defaultValue = "0") int from,
-            @Validated @Min(1) @RequestParam(defaultValue = "10") int size) {
+            @Min(0) @RequestParam(defaultValue = "0") int from,
+            @Min(1) @RequestParam(defaultValue = "10") int size) {
         log.info("Search by text={}", text);
         return itemClient.getBySubstring(text, userId, from, size);
     }
@@ -85,7 +85,7 @@ public class ItemController {
     @DeleteMapping("/{itemId}")
     public void deleteItemById(
             @RequestHeader("X-Sharer-User-Id") @Min(0) long userId,
-            @PathVariable @Min(0) long itemId) {
+            @Min(0) long itemId) {
         log.info("Delete by id={}", itemId);
         itemClient.deleteItem(itemId, userId);
     }
